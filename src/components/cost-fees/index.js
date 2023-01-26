@@ -28,12 +28,13 @@ import CostIcon from "src/assets/images/cost-icon.svg";
 const CostFees = () => {
     return (
         <Grid container justifyContent={"center"}
-              sx={{marginTop: {xs: "calc(50vh - 250px)", sm: "calc(50vh - 250px)", lg: "calc(50vh - 300px)"}}}>
+              sx={{marginTop: {xs: "calc(50vh - 250px)", sm: "calc(50vh - 250px)", lg: "calc(50vh - 300px)"},paddingBottom:"30px"}}>
             <Grid item xs={9} container sx={{marginTop: {xs: "5px", md: "20px"}}} justifyContent={"space-between"}>
                 <Grid item container xs={12} md={12} direction={"column"}>
 
 
                     <Grid container justifyContent={"space-between"}>
+
                         <Grid item xs={12} sm={5.5} md={2.8} container style={{marginTop: "50px"}} alignItems={"center"}
                               direction={"column"}>
                             <Paper style={{
@@ -194,7 +195,7 @@ const CostFees = () => {
                             </Paper>
                         </Grid>
 
-                        <Grid item xs={12} sm={5.5} md={2.8} container style={{marginTop: "50px"}} alignItems={"center"}
+                        <Grid item xs={12} sm={5.5} md={2.8} container sx={{marginTop: {xs:"50px",sm:"100px"}}} alignItems={"center"}
                               direction={"column"}>
                             <Paper style={{
                                 padding: "10px",
@@ -234,7 +235,7 @@ const CostFees = () => {
                             </Paper>
                         </Grid>
 
-                        <Grid item xs={12} sm={5.5} md={2.8} container style={{marginTop: "50px"}} alignItems={"center"}
+                        <Grid item xs={12} sm={5.5} md={2.8} container sx={{marginTop: {xs:"50px",sm:"100px"}}} alignItems={"center"}
                               direction={"column"}>
                             <Paper style={{
                                 padding: "10px",
@@ -274,7 +275,7 @@ const CostFees = () => {
                             </Paper>
                         </Grid>
 
-                        <Grid item xs={12} sm={5.5} md={2.8} container style={{marginTop: "50px"}} alignItems={"center"}
+                        <Grid item xs={12} sm={5.5} md={2.8} container sx={{marginTop: {xs:"50px",sm:"100px"}}} alignItems={"center"}
                               direction={"column"}>
                             <Paper style={{
                                 padding: "10px",
@@ -314,7 +315,7 @@ const CostFees = () => {
                             </Paper>
                         </Grid>
 
-                        <Grid item xs={12} sm={5.5} md={2.8} container style={{marginTop: "50px"}} alignItems={"center"}
+                        <Grid item xs={12} sm={5.5} md={2.8} container sx={{marginTop: {xs:"50px",sm:"100px"}}} alignItems={"center"}
                               direction={"column"}>
                             <Paper style={{
                                 padding: "10px",

@@ -1120,3 +1120,8 @@ export const getAllGraduationStatus=()=>{
 export const getAllLanguageStatus=()=>{
     return ["I don't have","A1","A2","B1","B2","C1"]
 }
+
+
+export const getSelectedLanguage=()=>{
+    return localStorage.getItem("language") || "English";
+}

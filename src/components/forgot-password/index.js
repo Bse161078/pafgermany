@@ -10,15 +10,14 @@ import {getFireStoreDb, initializeFirebase} from "../../config/firebase";
 import Button from "@mui/material/Button/Button";
 
 import { doc, setDoc,getDoc } from "firebase/firestore";
-import { getAuth, signInWithEmailAndPassword,signOut,sendPasswordResetEmail   } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword,signOut,sendPasswordResetEmail,fetchSignInMethodsForEmail    } from "firebase/auth";
 import {useLocation,useOutletContext,Outlet,useNavigate} from 'react-router-dom';
 import Loader from "../common/Loader";
 import ResponsiveConfirmationDialog from "../common/ResponsiveConfirmation";
 
 
 export const initialRegister = {
-    email: {value: null, error: "Email cant be empty", showError: false},
-    password: {value: '', error: "Password cant be empty", showError: false},
+    email: {value: null, error: "Email cant be empty", showError: false}
 };
 
 
@@ -33,7 +32,7 @@ const initialConfirmation = {
     buttonNo: null
 }
 
-const Login=()=>{
+const ForgotPassword=()=>{
     const [loading, setLoading] = useState(false);
     const [user, setUser] = useState(initialRegister);
     let navigate = useNavigate();
@@ -82,90 +81,37 @@ const Login=()=>{
     }
 
 
-    const logoutUser=()=>{
-        setLoading(true);
-        const auth = getAuth();
-        signOut(auth).then(() => {
+    const forgotPassword=async (auth,email)=>{
+        try{
+            setLoading(true);
+            const forgotPassword=await fetchSignInMethodsForEmail(auth,email);
+            const sendEmail=await sendPasswordResetEmail(auth,email);
+            navigate('/login');
             setLoading(false);
-        }).catch((error) => {
+        }catch (e) {
             setLoading(false);
-        });
-
+            setConfirmation({
+                show: true, title: "Error",
+                text: e.toString()
+                , data: {}, isUpdate: false,
+                buttonYes:
+                    <Button autoFocus onClick={(e) => {
+                        setConfirmation(initialConfirmation)
+                    }}>{"ok"}</Button>,
+            })
+        }
     }
 
-
-    const registerUser=async ()=>{
-        setLoading(true);
-        initializeFirebase();
-        const auth = getAuth();
-        const parsedUser=transformValidateObject(user);
+    const onForgotPassword=()=>{
         const validate = validateUserInput({...user}, "","Password must have at least 8 characters");
-
         if(validate.isValid){
-
-            signInWithEmailAndPassword(auth, parsedUser.email, parsedUser.password)
-                .then(async (userCredential) => {
-                    if (userCredential && userCredential.user.uid) {
-
-                        const userData = await getUserData(userCredential.user.uid);
-                        setLoading(false);
-
-                        if (userData && userData.progress===3) {
-                            navigate('/dashboard');
-                        } else {
-                            logoutUser()
-                            setConfirmation({
-                                show: true, title: "Error",
-                                text: "Please complete registration process"
-                                , data: {}, isUpdate: false,
-                                buttonYes:
-                                    <Button autoFocus onClick={(e) => {
-                                        setConfirmation(initialConfirmation)
-                                    }}>{"ok"}</Button>,
-                            })
-                        }
-
-                    }else{
-                        logoutUser()
-                        setLoading(false);
-                        setConfirmation({
-                            show: true, title: "Error",
-                            text: "Please complete registration process"
-                            , data: {}, isUpdate: false,
-                            buttonYes:
-                                <Button autoFocus onClick={(e) => {
-                                    setConfirmation(initialConfirmation)
-                                }}>{"ok"}</Button>,
-                        })
-                    }
-                    // Signed in
-
-                })
-                .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    setLoading(false);
-                    setConfirmation({
-                        show: true, title: "Error",
-                        text: errorMessage
-                        , data: {}, isUpdate: false,
-                        buttonYes:
-                            <Button autoFocus onClick={(e) => {
-                                setConfirmation(initialConfirmation)
-                            }}>{"ok"}</Button>,
-                    })
-                    // ..
-                });
+            const auth = getAuth();
+            const parsedUser=transformValidateObject(user);
+            forgotPassword(auth,parsedUser.email)
         }else{
             setUser(validate.data);
             setCount(count + 1);
         }
-
-    }
-
-
-    const onForgotPassword=()=>{
-        navigate('/forgot-password')
     }
 
 
@@ -189,12 +135,12 @@ const Login=()=>{
             <Grid item xs={11} md={4} container direction={"column"} justifyContent={"center"} alignItems={"flex-start"}>
                 <Grid item>
                     <CustomLabelHeaderExtraLarge
-                        text={"Sign in"}
+                        text={"Forgot Password"}
                         color={"#FFCC00"} fontWeight={"bold"}/>
                 </Grid>
                 <Grid item style={{marginTop:"20px"}}>
                     <CustomLabelLabelMedium
-                        text={"Enter your credentials to acces your account"}
+                        text={"Enter your email to receive verification link."}
                         color={"black"} fontWeight={"bold"} color={"black"} fontWeight={"bold"}
                         opacity={1} lineHeight={1.7} textAlign={"center"}/>
                 </Grid>
@@ -216,30 +162,10 @@ const Login=()=>{
                     </Grid>
                 </Grid>
 
-                <Grid item container style={{marginTop:"20px"}}>
-                    <Grid item>
-                        <CustomLabelLabelMedium
-                            text={"Password"}
-                            color={"black"} fontWeight={"bold"} textAlign={"center"}
-                            lineHeight={1.7}/>
-                    </Grid>
-                    <Grid item container>
-                        <CustomAuthTextField placeholder={"type password here"}
-                                             type={"password"}
-                                             value={user.password.value}
-                                             onChange={(e) => onChange(e, "password")}
-                                             showError={user.password.showError}
-                                             error={user.password.error}
-                        />
-                    </Grid>
-                </Grid>
 
                 <Grid container style={{marginTop:"20px"}} justifyContent={"space-between"}>
-                    <Grid item onClick={(e)=>registerUser()}>
-                        <CustomButtonLarge text={"Log in"} background={"red"} border={"2px solid red"}/>
-                    </Grid>
                     <Grid item onClick={(e)=>onForgotPassword()}>
-                        <CustomButtonLarge text={"Forgot Password?"} background={"transparent"} color={"red"} border={"2px solid red"}/>
+                        <CustomButtonLarge text={"Send Email"} background={"red"} border={"2px solid red"}/>
                     </Grid>
                 </Grid>
 
@@ -249,4 +175,4 @@ const Login=()=>{
     )
 }
 
-export default Login;
+export default ForgotPassword;

@@ -5,18 +5,18 @@ import React from "react";
 
 
 const MenuItem=(props)=>{
-    const {title,selected,showDropDownIcon,type,onEnter,onLeave,onClick,page}=props;
+    const {title,hovered,clicked,showDropDownIcon,type,onEnter,onLeave,onClick,page,onLanguageClick}=props;
 
 
     return(
         <Grid item style={{cursor:"pointer"}}
-              onClick={(e)=> onClick && onClick(page)}
-              onMouseEnter={() => onEnter(type)}
+              onClick={(e)=> (onClick && onClick(page,type)) || (onLanguageClick && onLanguageClick(e))}
+              onMouseEnter={() => onEnter && onEnter(type)}
               onMouseLeave={() => onLeave && onLeave(type)}>
             <Grid container direction={"column"} alignItems={"center"}>
                 <Grid item container alignItems={"center"} spacing={1}>
                     <Grid item>
-                        <CustomLabelHeader text={title} color={selected?"#FFCC00":"white"} fontWeight={"bold"}/>
+                        <CustomLabelHeader text={title} color={(hovered || clicked)?"#FFCC00":"white"} fontWeight={"bold"}/>
                     </Grid>
                     {showDropDownIcon &&
                         <Grid item style={{}}>
@@ -24,7 +24,7 @@ const MenuItem=(props)=>{
                         </Grid>
                     }
                 </Grid>
-                {selected &&
+                {(clicked) &&
                     <Grid item sx={{display:{xs:"none",sm:"block"}}}>
                         <CustomLabelHeader text={"●"} color={"#FFCC00"} fontWeight={"bold"}/>
                     </Grid>

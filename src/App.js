@@ -37,70 +37,79 @@ import Profile from "./components/dashboard/profile";
 import Dashboard from "./components/dashboard";
 import Translation from "./components/dashboard/translation";
 import RecognitionDashboard from "./components/dashboard/recognition";
+import ForgotPassword from "./components/forgot-password";
+import ResetPassword from "./components/reset-password";
+import {store} from "./store/store";
+import {Provider} from "react-redux";
 
 const theme = createTheme({
     breakpoints: {
         values: {
             xs: 0,
             sm: 600,
-            md: 990,
+            md: 1024,
             lg: 1200,
             xlg: 1360,
         },
     },
+
 });
 
 function App() {
 
 
-
     return (
         <>
             <ThemeProvider theme={theme}>
-                <Router>
-                    <Routes>
-                        <Route path="/login" element={<Login/>}/>
-                        <Route path="/register" element={<Register/>}>
-                            <Route path="step1" element={<RegisterStep1/>}/>
-                            <Route path="step2" element={<RegisterStep2/>}/>
-                            <Route path="step3" element={<RegisterStep3/>}/>
-                        </Route>
+                <Provider store={store}>
+                    <Router>
+                        <Routes>
+                            <Route path="/login" element={<Login/>}/>
+                            <Route path="/forgot-password" element={<ForgotPassword/>}/>
+                            <Route path="/reset-password" element={<ResetPassword/>}/>
 
-                        <Route path="/" element={<Navigation/>}>
-                            <Route path="" element={<Home/>}/>
-                            <Route path="nursing" element={<Nursing/>}/>
-                            <Route path="it-specialist" element={<ItSpecialist/>}/>
-                            <Route path="engineering" element={<Engineering/>}/>
-                            <Route path="physicians" element={<Physicians/>}/>
-                            <Route path="scientists" element={<Scientists/>}/>
-                            <Route path="recognition" element={<Recognition/>}/>
-                            <Route path="why-recognition" element={<WhyRecognition/>}/>
-                            <Route path="academic-qualifications" element={<AcademicRecognition/>}/>
-                            <Route path="work-contract" element={<WorkContract/>}/>
-                            <Route path="salary-tax" element={<SalaryTax/>}/>
-                            <Route path="learn-german" element={<LanguageLessons/>}/>
-                            <Route path="integration-courses" element={<IntegrationCourses/>}/>
-                            <Route path="economy" element={<Economy/>}/>
-                            <Route path="immigration" element={<Immigration/>}/>
-                            <Route path="living-expenses" element={<LivingExpenses/>}/>
-                            <Route path="cost" element={<CostFees/>}/>
-                            <Route path="contact-us" element={<ContactUs/>}/>
-                            <Route path="faq" element={<Faq/>}/>
-                            <Route path="privacy-policy" element={<PrivacyPolicy/>}/>
-                            <Route path="cancellation-policy" element={<CancellationPolicy/>}/>
-                            <Route path="terms-condition" element={<TermsCondition/>}/>
-
-                            <Route path="dashboard" element={<Dashboard/>}>
-                                <Route path="profile" element={<Profile/>}/>
-                                <Route path="translate" element={<Translation/>}/>
-                                <Route path="recognition" element={<RecognitionDashboard/>}/>
-
+                            <Route path="/register" element={<Register/>}>
+                                <Route path="step1" element={<RegisterStep1/>}/>
+                                <Route path="step2" element={<RegisterStep2/>}/>
+                                <Route path="step3" element={<RegisterStep3/>}/>
                             </Route>
 
-                        </Route>
-                        <Route path="/*" element={<PageNotFound/>}/>
-                    </Routes>
-                </Router>
+                            <Route path="/" element={<Navigation/>}>
+                                <Route path="" element={<Home/>}/>
+                                <Route path="nursing" element={<Nursing/>}/>
+                                <Route path="it-specialist" element={<ItSpecialist/>}/>
+                                <Route path="engineering" element={<Engineering/>}/>
+                                <Route path="physicians" element={<Physicians/>}/>
+                                <Route path="scientists" element={<Scientists/>}/>
+                                <Route path="recognition" element={<Recognition/>}/>
+                                <Route path="why-recognition" element={<WhyRecognition/>}/>
+                                <Route path="academic-qualifications" element={<AcademicRecognition/>}/>
+                                <Route path="work-contract" element={<WorkContract/>}/>
+                                <Route path="salary-tax" element={<SalaryTax/>}/>
+                                <Route path="learn-german" element={<LanguageLessons/>}/>
+                                <Route path="integration-courses" element={<IntegrationCourses/>}/>
+                                <Route path="economy" element={<Economy/>}/>
+                                <Route path="immigration" element={<Immigration/>}/>
+                                <Route path="living-expenses" element={<LivingExpenses/>}/>
+                                <Route path="cost" element={<CostFees/>}/>
+                                <Route path="contact-us" element={<ContactUs/>}/>
+                                <Route path="faq" element={<Faq/>}/>
+                                <Route path="privacy-policy" element={<PrivacyPolicy/>}/>
+                                <Route path="cancellation-policy" element={<CancellationPolicy/>}/>
+                                <Route path="terms-condition" element={<TermsCondition/>}/>
+
+                                <Route path="dashboard" element={<Dashboard/>}>
+                                    <Route path="profile" element={<Profile/>}/>
+                                    <Route path="translate" element={<Translation/>}/>
+                                    <Route path="recognition" element={<RecognitionDashboard/>}/>
+
+                                </Route>
+
+                            </Route>
+                            <Route path="/*" element={<PageNotFound/>}/>
+                        </Routes>
+                    </Router>
+                </Provider>
             </ThemeProvider>
         </>
     );

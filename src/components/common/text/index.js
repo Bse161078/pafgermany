@@ -22,6 +22,13 @@ const useStyles = makeStyles(() => ({
             borderRadius: "5px"
         }
     },
+    rootWhite: {
+        "& .MuiInputBase-root": {
+            background: "white",
+            height: "40px",
+            borderRadius: "5px"
+        }
+    },
     auth_root: {
         "& .MuiInputBase-root": {
             background: "#E8F0FE",
@@ -98,6 +105,31 @@ const CustomTextField = (props) => {
 }
 
 
+const CustomTextFieldWhite = (props) => {
+    const classes = useStyles();
+
+    return (
+        <TextField
+            fullWidth
+            onChange={props.onChange}
+            className={classes.rootWhite}
+            value={props.value && (props.value).length>0?props.value:''}
+            type={props.type}
+            placeholder={props.placeholder}
+            helperText={props.helperText}
+            error={props.error}
+            disabled={props.disabled}
+            autoFocus={props.autoFocus}
+            autoComplete="new-password"
+            InputProps={{
+                sx: {height:40}, classes: {notchedOutline: classes.notchedOutline}, ...props.otherInputProps
+            }}
+
+        />
+    )
+}
+
+
 const CustomAuthTextField = (props) => {
     const classes = useStyles();
 
@@ -114,6 +146,8 @@ const CustomAuthTextField = (props) => {
             disabled={props.disabled}
             autoFocus={props.autoFocus}
             autoComplete="new-password"
+            inputRef={props.params && props.params.inputRef}
+
             InputProps={{
                 sx: {height:40}, classes: {notchedOutline: classes.notchedOutline}, ...props.otherInputProps
             }}
@@ -268,6 +302,7 @@ const CustomDropdown = (props) => {
                 style={{height: "40px", background: "#E8F0FE", borderRadius: 5, fontSize: 12, fontWeight: "bold"}}
                 disabled={props.disabled}
                 multiple={props.multiple}
+
                 autoFocus={props.autoFocus}
                 renderValue={props.multiple &&((selected) => {
                     return selected && Array.isArray(selected) && selected.join(",")
@@ -304,4 +339,4 @@ const CustomDropdown = (props) => {
 
 
 
-export {CustomTextField,CustomAuthTextField,CustomDropdown,CustomPhoneField,CustomSearchField,CustomTextFieldReview,CustomTextFieldMultiline,CustomAgeField};
+export {CustomTextField,CustomTextFieldWhite,CustomAuthTextField,CustomDropdown,CustomPhoneField,CustomSearchField,CustomTextFieldReview,CustomTextFieldMultiline,CustomAgeField};

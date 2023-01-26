@@ -7,7 +7,13 @@ import React from "react";
 const CustomButtonLarge = (props) => {
     return (
         <Button
-            sx={{padding:{xs:"10px 20px",md:"10px 30px"}}}
+            sx={{
+                padding:{xs:"10px 20px",md:"10px 30px"},
+                ':hover': {
+                    bgcolor: 'black!important', // theme.palette.primary.main
+                    color: 'white!important',
+                }
+            }}
             disabled={props.disabled}
             style={{
                 background: props.background || '#4E20EA', width: "100%", opacity: props.disabled ? 0.8 : 1,
@@ -20,7 +26,8 @@ const CustomButtonLarge = (props) => {
             <Typography
                 sx={{
                     fontSize: {xs: "10px",sm:"14px",md:"10px",lg:"13px",xlg:"17px"},
-                    fontWeight:"bold"
+                    fontWeight:"bold",
+
                 }}
                 style={{
                     color: props.color || 'white',

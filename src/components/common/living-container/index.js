@@ -4,11 +4,30 @@ import LearnGermanyIcon from "../../../assets/images/learn-german.webp";
 import {CustomLabelHeaderLarge, CustomLabelLabelMedium} from "../label";
 import ArrowForwardIosIcon from "@mui/material/SvgIcon/SvgIcon";
 import DiscoveringIcon from "../../../assets/images/discovering.webp";
-import React from "react";
+import React, {useEffect, useState} from "react";
+import {useSelector} from "react-redux";
 
+let languageLessonTitle,integrationCoursesTitle,discoverGermanyTitle,economyTitle,immigrationTitle,livingExpensesTitle,educationTitle,
+    learnGermanyTitle;
 
 const LivingContainer=(props)=>{
-    const {hover, onLeave,onClick} = props;
+    const {hover, onLeave,onClick,type,selectedSubMenu} = props;
+    const {selectedLanguage} = useSelector((state) => state.languageReducer);
+    const [count,setCount]=useState(0);
+
+    const loadConstant = async () => {
+        ({
+            languageLessonTitle,integrationCoursesTitle,discoverGermanyTitle,economyTitle,immigrationTitle,livingExpensesTitle,educationTitle,
+            learnGermanyTitle
+        } =
+            selectedLanguage === "English" ? await import(`src/translation/eng`) : await import(`src/translation/tur`));
+        setCount(count+1);
+    }
+
+    useEffect(()=>{
+        loadConstant();
+    },[selectedLanguage])
+
 
     return(
         <Grid container sx={{
@@ -23,13 +42,13 @@ const LivingContainer=(props)=>{
             {/*</Grid>*/}
             <Paper style={{padding: "20px", background: "white", borderRadius: "20px"}}>
                 <Grid container>
-                    <Grid item xs={5} container direction={"column"} alignItems={"flex-start"}>
-                        <Grid item>
+                    <Grid item xs={5.8} container direction={"column"} alignItems={"flex-start"}>
+                        <Grid item style={{width:"100%"}}>
                             <img src={LearnGermanyIcon} style={{width: "100%",borderRadius:"20px"}}/>
                         </Grid>
                         <Grid item style={{marginLeft: "10px"}}>
                             <CustomLabelHeaderLarge
-                                text={"Learn German"}
+                                text={learnGermanyTitle}
                                 color={"black"} fontWeight={"bold"}
                                 opacity={1} lineHeight={1.7}/>
                         </Grid>
@@ -38,10 +57,12 @@ const LivingContainer=(props)=>{
                             <Grid item>
                                 <ArrowForwardIosIcon sx={{fontSize: {xs: "12px", lg: "18px"}}}/>
                             </Grid>
-                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/learn-german')}>
+                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/learn-german',type)}>
                                 <CustomLabelLabelMedium
-                                    text={"Language Lessons"}
-                                    color={"black"} fontWeight={"bold"} fontWeight={"bold"}
+                                    className={"hoverRedLabel"}
+                                    text={languageLessonTitle}
+                                    color={selectedSubMenu==="/learn-german"?"red":"black"}
+                                    fontWeight={"bold"}
                                     opacity={0.8} lineHeight={1.7}/>
 
                             </Grid>
@@ -51,23 +72,25 @@ const LivingContainer=(props)=>{
                             <Grid item>
                                 <ArrowForwardIosIcon sx={{fontSize: {xs: "12px", lg: "18px"}}}/>
                             </Grid>
-                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/integration-courses')}>
+                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/integration-courses',type)}>
                                 <CustomLabelLabelMedium
-                                    text={"Integration Courses"}
-                                    color={"black"} fontWeight={"bold"} fontWeight={"bold"}
+                                    className={"hoverRedLabel"}
+                                    text={integrationCoursesTitle}
+                                    color={selectedSubMenu==="/integration-courses"?"red":"black"}
+                                    fontWeight={"bold"}
                                     opacity={0.8} lineHeight={1.7}/>
 
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={1}></Grid>
-                    <Grid item xs={5} container direction={"column"} alignItems={"flex-start"}>
-                        <Grid item>
+                    <Grid item xs={0.4}></Grid>
+                    <Grid item xs={5.8} container direction={"column"} alignItems={"flex-start"}>
+                        <Grid item style={{width:"100%"}}>
                             <img src={DiscoveringIcon} style={{width: "100%",borderRadius:"20px"}}/>
                         </Grid>
                         <Grid item xs style={{marginLeft: "10px"}}>
                             <CustomLabelHeaderLarge
-                                text={"Discover Germany"}
+                                text={discoverGermanyTitle}
                                 color={"black"} fontWeight={"bold"}
                                 opacity={1} lineHeight={1.7}/>
                         </Grid>
@@ -76,10 +99,12 @@ const LivingContainer=(props)=>{
                             <Grid item>
                                 <ArrowForwardIosIcon sx={{fontSize: {xs: "12px", lg: "18px"}}}/>
                             </Grid>
-                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/economy')}>
+                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/economy',type)}>
                                 <CustomLabelLabelMedium
-                                    text={"Economy"}
-                                    color={"black"} fontWeight={"bold"} fontWeight={"bold"}
+                                    className={"hoverRedLabel"}
+                                    text={economyTitle}
+                                    color={selectedSubMenu==="/economy"?"red":"black"}
+                                    fontWeight={"bold"}
                                     opacity={0.8} lineHeight={1.7}/>
 
                             </Grid>
@@ -89,10 +114,12 @@ const LivingContainer=(props)=>{
                             <Grid item>
                                 <ArrowForwardIosIcon sx={{fontSize: {xs: "12px", lg: "18px"}}}/>
                             </Grid>
-                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/immigration')}>
+                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/immigration',type)}>
                                 <CustomLabelLabelMedium
-                                    text={"Immigration"}
-                                    color={"black"} fontWeight={"bold"} fontWeight={"bold"}
+                                    className={"hoverRedLabel"}
+                                    text={immigrationTitle}
+                                    color={selectedSubMenu==="/immigration"?"red":"black"}
+                                    fontWeight={"bold"}
                                     opacity={0.8} lineHeight={1.7}/>
 
                             </Grid>
@@ -102,10 +129,12 @@ const LivingContainer=(props)=>{
                             <Grid item>
                                 <ArrowForwardIosIcon sx={{fontSize: {xs: "12px", lg: "18px"}}}/>
                             </Grid>
-                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/living-expenses')}>
+                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/living-expenses',type)}>
                                 <CustomLabelLabelMedium
-                                    text={"Living Expenses & Salary"}
-                                    color={"black"} fontWeight={"bold"} fontWeight={"bold"}
+                                    className={"hoverRedLabel"}
+                                    text={livingExpensesTitle}
+                                    color={selectedSubMenu==="/living-expenses"?"red":"black"}
+                                    fontWeight={"bold"}
                                     opacity={0.8} lineHeight={1.7}/>
 
                             </Grid>
@@ -115,10 +144,11 @@ const LivingContainer=(props)=>{
                             <Grid item>
                                 <ArrowForwardIosIcon sx={{fontSize: {xs: "12px", lg: "18px"}}}/>
                             </Grid>
-                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/education')}>
+                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/education',type)}>
                                 <CustomLabelLabelMedium
-                                    text={"Education"}
-                                    color={"black"} fontWeight={"bold"} fontWeight={"bold"}
+                                    text={educationTitle}
+                                    color={selectedSubMenu==="/education"?"red":"black"}
+                                    fontWeight={"bold"}
                                     opacity={0.8} lineHeight={1.7}/>
 
                             </Grid>

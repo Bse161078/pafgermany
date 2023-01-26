@@ -98,7 +98,7 @@ const CustomLabelHeader = (props) => {
     return (
         <Typography
             sx={{
-                fontSize: {xs:"8px",sm:"11px",md:"11px",lg:"15px",xlg:"20px"},
+                fontSize: {xs:"8px",sm:"11px",md:"11px",lg:"15px",xlg:"17px"},
                 color: props.color || "#FFFFFF",
                 fontFamily: 'Poppins',
                 fontWeight:props.fontWeight,
@@ -165,6 +165,7 @@ const CustomLabelLabelMedium = (props) => {
     return (
         <Typography
             display={props.inline}
+            className={props.className}
             sx={{
                 fontSize: {xs:"10px",sm:"10",md:"12px",lg:"16px"},
                 color: props.color || "#FFFFFF",

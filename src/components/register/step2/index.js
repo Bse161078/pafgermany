@@ -27,6 +27,10 @@ import {CustomDropdown} from "../../common/text";
 import MenuItem from "@mui/material/MenuItem/MenuItem";
 import {doc, getDoc, setDoc} from "firebase/firestore";
 import Loader from "../../common/Loader";
+import {DesktopDatePicker, LocalizationProvider} from "@mui/x-date-pickers";
+import moment from "moment";
+import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
 export const initialRegister = {
     username: {value: null, error: "Username cant be empty", showError: false},
@@ -49,16 +53,19 @@ const RegisterStep2 = (props) => {
     const [user, setUser] = useState(initialRegister);
     const [count, setCount] = useState(0);
     const [terms, setTerms] = useState({privacyPolicy: false, cancellationPolicy: false, validInfo: false})
-    const [staticData, setStaticData] = useState({countryCodes: [], languages: [], nationalities: []});
+    const [staticData, setStaticData] = useState({countryCodes: [], languages: [], nationalities: [], countries: []});
     const {userId} = useOutletContext();
     const [loading, setLoading] = useState(false);
+    const [openCalendar, setOpenCalendar] = useState(false);
 
     useEffect(() => {
 
         const countryCodes = (Country.getAllCountries()).map((country) => (country.phonecode + " " + country.name));
+        const countries = (Country.getAllCountries()).map((country) => country.name);
+
         const languages = getAllLanguages();
         const nationalities = getAllNationalities();
-        setStaticData({countryCodes, languages, nationalities});
+        setStaticData({countryCodes, languages, nationalities, countries});
         setCount(count + 1);
 
 
@@ -122,7 +129,7 @@ const RegisterStep2 = (props) => {
         setLoading(true);
         const userData = transformValidateObject(user);
         userData.progress = 2;
-        await setDoc(doc(getFireStoreDb(), "users", userId), userData,{ merge: true });
+        await setDoc(doc(getFireStoreDb(), "users", userId), userData, {merge: true});
         setLoading(false);
         navigate('/register/step3');
     }
@@ -132,7 +139,7 @@ const RegisterStep2 = (props) => {
         const validate = validateUserInput({...user}, "", "Password must have at least 8 characters");
         if (validate.isValid) {
 
-                registerUser();
+            registerUser();
 
         } else {
             setUser(validate.data);
@@ -140,6 +147,10 @@ const RegisterStep2 = (props) => {
         }
 
     }
+
+
+    let CountriesContainerList = (staticData.countries).map((code) => <MenuItem
+        value={code}>{code}</MenuItem>)
 
 
     let CountryCodeListContainer = (staticData.countryCodes).map((code) => <MenuItem
@@ -291,22 +302,57 @@ const RegisterStep2 = (props) => {
                 </Grid>
 
                 <Grid container justifyContent={"space-between"} style={{marginTop: "30px"}}>
-                    <Grid item xs={12} md={5.5} container >
+                    <Grid item xs={12} md={5.5} container>
                         <Grid item>
                             <CustomLabelHeaderLarge
                                 text={"Date Of Birth"}
                                 color={"black"} fontWeight={"bold"} textAlign={"center"}
                                 lineHeight={1.7}/>
                         </Grid>
-                        <Grid item container>
-                            <CustomAuthTextField placeholder={"type date of birth here"}
-                                                 value={user.dob.value}
-                                                 onChange={(e) => onChange(e, "dob")}
-                                                 showError={user.dob.showError}
-                                                 error={user.dob.error}/>
+                        <Grid item container justifyContent={"center"} alignItems={"center"} style={{position:"relative"}}>
+
+                            <LocalizationProvider dateAdapter={AdapterDateFns} sx={{
+                                ".MuiPickersPopper-root":{
+                                    top:"140px!important"
+                                }
+                            }}>
+
+                                <DesktopDatePicker
+                                    label=""
+                                    open={openCalendar}
+                                    onClose={() => setOpenCalendar(false)}
+                                    inputFormat="mm/dd/yyyy"
+                                    value={user.dob.value}
+
+                                    onChange={(value) => onChange({target:{value:moment(value).format("DD/MM/yyyy")}}, "dob")}
+                                    renderInput={(params) =>
+                                        (
+
+                                            <CustomAuthTextField label={""} value={user.dob && user.dob.value}
+                                                                 placeholder={"type date of birth here"}
+                                                                 params={params}
+                                                                 showError={user.dob.showError}
+                                                                 error={user.dob.error}
+                                                                 otherInputProps={{
+                                                                     endAdornment:
+                                                                         <CalendarTodayIcon style={{
+                                                                             color: "black",
+                                                                             cursor: "pointer",
+                                                                             fontSize: "18px"
+                                                                         }}
+                                                                                            onClick={(e) => setOpenCalendar(true)}/>
+                                                                 }}
+                                            />
+
+                                        )
+                                    }
+                                />
+                            </LocalizationProvider>
+
                         </Grid>
                     </Grid>
                     <Grid item xs={12} md={5.5} container sx={{marginTop: {xs: "30px", md: "0px"}}}>
+
                         <Grid item>
                             <CustomLabelHeaderLarge
                                 text={"Place Of Birth"}
@@ -314,11 +360,14 @@ const RegisterStep2 = (props) => {
                                 lineHeight={1.7}/>
                         </Grid>
                         <Grid item container>
-                            <CustomAuthTextField placeholder={"type place of birth here"}
-                                                 value={user.pob.value}
-                                                 onChange={(e) => onChange(e, "pob")}
-                                                 showError={user.pob.showError}
-                                                 error={user.pob.error}/>
+
+
+                            <CustomDropdown value={user.pob.value}
+                                            onChange={(e) => onChange(e, "pob")}
+                                            container={CountriesContainerList}
+                                            showError={user.pob.showError}
+                                            error={user.pob.error}
+                            />
                         </Grid>
                     </Grid>
                 </Grid>
@@ -413,7 +462,8 @@ const RegisterStep2 = (props) => {
                                             container={LanguageListContainer}
                                             showError={user.language.showError}
                                             error={user.language.error}
-                            /> </Grid>
+                            />
+                        </Grid>
                     </Grid>
                     <Grid item xs={12} md={5.5} container sx={{marginTop: {xs: "30px", md: "0px"}}}>
                         <Grid item>

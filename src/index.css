@@ -1,26 +1,27 @@
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 
+p.hoverRedLabel:hover {
+    color:red;
+}
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
 
-
 @font-face {
-  font-family: 'Poppins';
-  font-style: normal;
-  font-weight: normal;
-  src: local('SF UI Text Regular'), url(src/assets/fonts/Poppins-Regular.ttf) format('woff');
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: normal;
+    src: local('SF UI Text Regular'), url(src/assets/fonts/Poppins-Regular.ttf) format('woff');
 }
-
 
 input:-webkit-autofill,
 input:-webkit-autofill:focus {
-  transition: background-color 600000s 0s, color 600000s 0s;
+    transition: background-color 600000s 0s, color 600000s 0s;
 }

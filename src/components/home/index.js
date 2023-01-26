@@ -61,7 +61,8 @@ import LearnGermanyIcon from 'src/assets/images/learn-german.webp';
 import DiscoveringIcon from 'src/assets/images/discovering.webp';
 import WorkContainer from "../common/work-container";
 import LivingContainer from "../common/living-container";
-import { useNavigate} from "react-router-dom"
+import { useNavigate,useOutletContext} from "react-router-dom"
+import {useSelector} from "react-redux";
 
 
 const ColorlibConnector = styled(StepConnector)(({theme}) => ({
@@ -92,12 +93,53 @@ const ColorlibConnector = styled(StepConnector)(({theme}) => ({
 
 const initialHover = {home: false, work: false, living: false, cost: false};
 
+
+let freeAssessmentTitle,receiveResultTitle,bookAppointmentTitle,processVisaApplication,immigrationExpertsTitle,speakToImmigrantTitle,
+    makeStepTitle,whoPafTitle,wouldLikeWorkTitle,wouldLikeWorkDesc1,wouldLikeWorkDesc2,ourServicesTitle,ourServicesDesc1,educationImmigrationTitle,
+    educationImmigrationDesc,businessImmigrationTitle,businessImmigrationDesc,skilledImmigrationTitle,skilledImmigrationDesc1,
+    skilledImmigrationDesc2,inspectingSortingTitle,inspectingSortingDesc1,translationDocTitle,translationDocDesc1,translationDocDesc2,deficitTitle,
+    deficitDesc1,deficitDesc2,acquisitionLivingTitle,acquisitionLivingDesc1,openingBackTitle,openingBackDesc1,step1Title,step2Title,step3Title,
+    step4Title,step5Title,step6Title,step7Title,chooseImmigrationTitle,immigrationChooseTitle,yourProfessionTile,engineeringDesc1,readMoreTitle,
+    scientistsTitle,scientistsDesc1,scientistsDesc2,nursingDesc1,pafConsultantTitle,pafConsultantDesc1,getConsultantTitle,immigrationServicesTitle,
+    submitDocTitle,submitDocDesc1,searchForJobTitle,searchForJobDesc,itSpecialistTitle,nursingTitle,engineeringTitle;
+
+
 const Home = () => {
+
+
+    const {onClick,userId} = useOutletContext();
 
     let navigate = useNavigate();
 
 
+    const {selectedLanguage} = useSelector((state) => state.languageReducer);
+    const [loading, setLoading] = useState(false);
+    const [count,setCount]=useState(0);
+
+
     const [hover, setHover] = useState(initialHover);
+
+
+    const loadConstant = async () => {
+        setLoading(true);
+        ({
+            freeAssessmentTitle,receiveResultTitle,bookAppointmentTitle,processVisaApplication,immigrationExpertsTitle,speakToImmigrantTitle,
+            makeStepTitle,whoPafTitle,wouldLikeWorkTitle,wouldLikeWorkDesc1,wouldLikeWorkDesc2,ourServicesTitle,ourServicesDesc1,educationImmigrationTitle,
+            educationImmigrationDesc,businessImmigrationTitle,businessImmigrationDesc,skilledImmigrationTitle,skilledImmigrationDesc1,
+            skilledImmigrationDesc2,inspectingSortingTitle,inspectingSortingDesc1,translationDocTitle,translationDocDesc1,translationDocDesc2,deficitTitle,
+            deficitDesc1,deficitDesc2,acquisitionLivingTitle,acquisitionLivingDesc1,openingBackTitle,openingBackDesc1,step1Title,step2Title,step3Title,
+            step4Title,step5Title,step6Title,step7Title,chooseImmigrationTitle,immigrationChooseTitle,yourProfessionTile,engineeringDesc1,readMoreTitle,
+            scientistsTitle,scientistsDesc1,scientistsDesc2,nursingDesc1,pafConsultantTitle,pafConsultantDesc1,getConsultantTitle,engineeringTitle,
+            immigrationServicesTitle,submitDocTitle,submitDocDesc1,searchForJobTitle,searchForJobDesc,itSpecialistTitle,nursingTitle
+        } =
+            selectedLanguage === "English" ? await import(`src/translation/eng`) : await import(`src/translation/tur`));
+        setLoading(false);
+        setCount(count+1)
+    }
+
+    useEffect(()=>{
+        loadConstant();
+    },[selectedLanguage])
 
     useEffect(() => {
         setHover({...initialHover, home: true})
@@ -117,63 +159,80 @@ const Home = () => {
     }
 
 
+    const openLink = (url) => {
+        let a = document.createElement("a");
+        document.body.appendChild(a);
+        a.style = "display: none";
+        a.href = url;
+        a.target="_blank"
+        a.click();
+        document.body.removeChild(a);
+
+    }
+
+
     return (
         <>
-            <Grid container style={{position: "relative", top: -80}}
+            <Grid container style={{position: "relative", top: -80,zIndex:11}}
                   justifyContent={"center"}>
-                <Grid item xs={9} container justifyContent={"space-between"}>
-                    <Grid item xs={12} md={3.5} container>
-                        <Paper style={{width: "100%", borderRadius: "10px", position: "relative"}}>
-                            <Grid item container justifyContent={"flex-end"}>
-                                <Grid item style={{
-                                    padding: "10px",
-                                    background: "black",
-                                    borderRadius: "0% 10px 0% 100%",
-                                    position: "relative"
-                                }}>
-                                    <img src={TickIcon} style={{
-                                        width: "20px",
-                                        height: "20px",
-                                        position: "relative",
-                                        top: -3,
-                                        left: 5
-                                    }}/>
-                                </Grid>
-                            </Grid>
-                            <Grid container style={{padding: "0px 15px 20px 15px"}}>
-                                <Grid container alignItems={"center"}>
-                                    <Grid item>
-                                        <img src={ReceiptEditIcon}/>
-                                    </Grid>
-                                    <Grid item sx={{marginLeft: {xs: "0px", md: "20px"}}}>
-                                        <CustomLabelHeader text={"Apply Online Visa"} color={"black"}
-                                                           fontWeight={"bold"}/>
-                                    </Grid>
-                                    <Divider style={{
-                                        width: "100%",
-                                        height: "2px",
-                                        marginTop: "10px",
-                                        background: "#00000033"
-                                    }}/>
-                                    <Grid item style={{marginTop: "20px"}}>
-                                        <CustomLabelLabelMedium
-                                            text={"We are reliable immigration consultants to handle your immigration case."}
-                                            color={"black"} fontWeight={"normal"}/>
+                <Grid item xs={9} container justifyContent={!userId?"space-between":"flex-start"}>
+                    {!userId &&
+                        <Grid item xs={12} md={3.5} container style={{cursor: "pointer"}}
+                              onClick={(e) => onClick('register')}>
+                            <Paper style={{width: "100%", borderRadius: "10px", position: "relative"}}>
+                                <Grid item container justifyContent={"flex-end"}>
+                                    <Grid item style={{
+                                        padding: "10px",
+                                        background: "black",
+                                        borderRadius: "0% 10px 0% 100%",
+                                        position: "relative"
+                                    }}>
+                                        <img src={TickIcon} style={{
+                                            width: "20px",
+                                            height: "20px",
+                                            position: "relative",
+                                            top: -3,
+                                            left: 5
+                                        }}/>
                                     </Grid>
                                 </Grid>
-                            </Grid>
-                            <Grid item xs={5} container
-                                  style={{
-                                      position: "absolute",
-                                      bottom: 0,
-                                      height: "40%",
-                                      borderRadius: "0% 100% 0% 0%",
-                                      background: "rgba(0, 0, 0, 0.04)",
-                                  }}>
-                            </Grid>
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={12} md={3.5} container sx={{marginTop: {xs: "20px", md: "0px"}}}>
+                                <Grid container style={{padding: "0px 15px 20px 15px"}}>
+                                    <Grid container alignItems={"center"}>
+                                        <Grid item>
+                                            <img src={ReceiptEditIcon}/>
+                                        </Grid>
+                                        <Grid item sx={{marginLeft: {xs: "0px", md: "20px"}}}>
+                                            <CustomLabelHeader text={freeAssessmentTitle} color={"black"}
+                                                               fontWeight={"bold"}/>
+                                        </Grid>
+                                        <Divider style={{
+                                            width: "100%",
+                                            height: "2px",
+                                            marginTop: "10px",
+                                            background: "#00000033"
+                                        }}/>
+                                        <Grid item style={{marginTop: "20px"}}>
+                                            <CustomLabelLabelMedium
+                                                text={receiveResultTitle}
+                                                opacity={"0.5"}
+                                                color={"black"} fontWeight={"bold"}/>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={5} container
+                                      style={{
+                                          position: "absolute",
+                                          bottom: 0,
+                                          height: "40%",
+                                          borderRadius: "0% 100% 0% 0%",
+                                          background: "rgba(0, 0, 0, 0.04)",
+                                      }}>
+                                </Grid>
+                            </Paper>
+                        </Grid>
+                    }
+                    <Grid item xs={12} md={3.5} container sx={{marginTop: {xs: "20px", md: "0px"}}} style={{cursor: "pointer"}}
+                    onClick={(e)=>onClick("dashboard/recognition")}>
                         <Paper style={{width: "100%", borderRadius: "10px", position: "relative"}}>
                             <Grid item container justifyContent={"flex-end"}>
                                 <Grid item style={{
@@ -183,7 +242,7 @@ const Home = () => {
                                     position: "relative"
                                 }}>
                                     <Grid style={{position: "relative", top: -3, left: 5}}>
-                                        <CustomLabelLabelMedium text={"02"} color={"white"}/>
+                                        <CustomLabelLabelMedium text={userId ? "01":"02"} color={"white"}/>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -193,7 +252,7 @@ const Home = () => {
                                         <img src={ProcessStep2}/>
                                     </Grid>
                                     <Grid item sx={{marginLeft: {xs: "0px", md: "20px"}}}>
-                                        <CustomLabelHeader text={"Apply Online Visa"} color={"black"}
+                                        <CustomLabelHeader text={bookAppointmentTitle} color={"black"}
                                                            fontWeight={"bold"}/>
                                     </Grid>
                                     <Divider style={{
@@ -204,8 +263,9 @@ const Home = () => {
                                     }}/>
                                     <Grid item style={{marginTop: "20px"}}>
                                         <CustomLabelLabelMedium
-                                            text={"To process your visa application with our experienced registered agents."}
-                                            color={"black"} fontWeight={"normal"}/>
+                                            text={processVisaApplication}
+                                            opacity={"0.5"}
+                                            color={"black"} fontWeight={"bold"}/>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -220,7 +280,8 @@ const Home = () => {
                             </Grid>
                         </Paper>
                     </Grid>
-                    <Grid item xs={12} md={3.5} container sx={{marginTop: {xs: "20px", md: "0px"}}}>
+                    <Grid item xs={12} md={3.5} container sx={{marginTop: {xs: "20px", md: "0px"},marginLeft:{xs:"0px",md:userId && "20px"},
+                    cursor:"pointer"}} onClick={(e)=>openLink("whatsapp://send?abid=phonenumber&text=Hello%2C%20World!")}>
                         <Paper style={{width: "100%", borderRadius: "10px", position: "relative"}}>
                             <Grid item container justifyContent={"flex-end"}>
                                 <Grid item style={{
@@ -230,7 +291,7 @@ const Home = () => {
                                     position: "relative"
                                 }}>
                                     <Grid style={{position: "relative", top: -3, left: 5}}>
-                                        <CustomLabelLabelMedium text={"03"} color={"white"}/>
+                                        <CustomLabelLabelMedium text={userId ? "02":"03"} color={"white"}/>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -240,7 +301,7 @@ const Home = () => {
                                         <img src={ProcessStep3}/>
                                     </Grid>
                                     <Grid item sx={{marginLeft: {xs: "0px", md: "20px"}}}>
-                                        <CustomLabelHeader text={"Apply Online Visa"} color={"black"}
+                                        <CustomLabelHeader text={immigrationExpertsTitle} color={"black"}
                                                            fontWeight={"bold"}/>
                                     </Grid>
                                     <Divider style={{
@@ -251,8 +312,8 @@ const Home = () => {
                                     }}/>
                                     <Grid item style={{marginTop: "20px"}}>
                                         <CustomLabelLabelMedium
-                                            text={"Our goal has been provide immigration in all over country and universities."}
-                                            color={"black"} fontWeight={"normal"}/>
+                                            text={speakToImmigrantTitle}
+                                            color={"black"} fontWeight={"bold"} opacity={"0.5"}/>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -269,7 +330,8 @@ const Home = () => {
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid item xs={12} container style={{marginTop: "20px"}} justifyContent={"center"}>
+            <Grid item xs={12} container style={{marginTop: "20px",cursor:"pointer"}}
+                  onClick={(e)=>openLink("https://www.youtube.com/embed/fLtb6EQTmhM")} justifyContent={"center"}>
                 <Grid item xs={9} container justifyContent={"space-between"} alignItems={"flex-start"}>
                     <Grid item container alignItems={"flex-start"} justifyContent={"center"} xs={12} md={6}
                           sx={{position: "relative", left: {xs: 0, md: -55}}}>
@@ -281,12 +343,12 @@ const Home = () => {
                           alignItems={{xs: "center", md: "flex-start"}} style={{marginTop: "30px"}}>
                         <Grid item>
                             <CustomLabelLabelMedium
-                                text={"Who Are PAF"}
+                                text={whoPafTitle}
                                 color={"#FFCC00"} fontWeight={"bold"}/>
                         </Grid>
                         <Grid item style={{marginTop: "10px"}}>
                             <CustomLabelHeaderExtraLarge
-                                text={"Would You like to work in Germany? "}
+                                text={wouldLikeWorkTitle}
                                 color={"black"} fontWeight={"bold"}/>
                         </Grid>
                         <Grid item style={{marginTop: "10px"}}>
@@ -294,20 +356,21 @@ const Home = () => {
                         </Grid>
                         <Grid item style={{marginTop: "10px"}}>
                             <CustomLabelHeaderLarge
-                                text={"In this case, you need a visa, language skills, and the recognition of your education."}
+                                text={wouldLikeWorkDesc1}
                                 color={"black"} fontWeight={"bold"}/>
                         </Grid>
                         <Grid item style={{marginTop: "20px"}}>
                             <CustomLabelLabelMedium
-                                text={"We’re here to help! Right here: PAF is your portal for all questions regarding the recognition process of your qualifications in Germany.\n" +
-                                "We support you in all steps of the bureaucratic application process, in finding a reputable job and in your first steps in Germany."}
+                                text={wouldLikeWorkDesc2}
                                 color={"black"} fontWeight={"bold"} opacity={0.6} lineHeight={1.7}/>
                         </Grid>
                         <Grid item container style={{marginTop: "20px"}}
                               justifyContent={{xs: "center", md: "flex-start"}}>
-                            <Grid item>
-                                <CustomButtonLarge text={"Sign Up"} background={"red"} border={"2px solid red"}/>
-                            </Grid>
+                            {!userId &&
+                                <Grid item onClick={(e) => onClick("register")}>
+                                    <CustomButtonLarge text={"Sign Up"} background={"red"} border={"2px solid red"}/>
+                                </Grid>
+                            }
                         </Grid>
                     </Grid>
                 </Grid>
@@ -318,12 +381,12 @@ const Home = () => {
                 <Grid item xs={9} container direction={"column"} alignItems={"center"}>
                     <Grid item>
                         <CustomLabelLabelMedium
-                            text={"Our Services"}
+                            text={ourServicesTitle}
                             color={"#FFCC00"} fontWeight={"bold"}/>
                     </Grid>
                     <Grid item style={{marginTop: "10px"}}>
                         <CustomLabelHeaderExtraLarge
-                            text={"Immigration Services"}
+                            text={immigrationServicesTitle}
                             color={"black"} fontWeight={"bold"}/>
                     </Grid>
                     <Grid item style={{marginTop: "10px"}}>
@@ -331,7 +394,7 @@ const Home = () => {
                     </Grid>
                     <Grid item style={{marginTop: "10px"}}>
                         <CustomLabelLabelMedium
-                            text={"PAF is a multilingual portal for foreign professionals who are given the opportunity and assistance to enter and work in Germany. We support you in the hurdle-laden recognition of your profession, in finding a reputable employer, and in your first steps in Germany. "}
+                            text={ourServicesDesc1}
                             color={"black"} fontWeight={"bold"} opacity={0.6} lineHeight={1.7} textAlign={"center"}/>
                     </Grid>
                 </Grid>
@@ -347,12 +410,12 @@ const Home = () => {
                         </Grid>
                         <Grid item style={{marginTop: "20px"}}>
                             <CustomLabelHeaderLarge
-                                text={"Education Immigration"}
+                                text={educationImmigrationTitle}
                                 color={"black"} fontWeight={"bold"}/>
                         </Grid>
                         <Grid item style={{marginTop: "10px"}}>
                             <CustomLabelLabelMedium
-                                text={"Lorem ipsum dolor sitame coctetur adipiscing elised do eiusmte"}
+                                text={educationImmigrationDesc}
                                 color={"black"} fontWeight={"bold"} color={"black"} fontWeight={"bold"}
                                 opacity={0.6} lineHeight={1.7} textAlign={"center"}/>
                         </Grid>
@@ -366,12 +429,12 @@ const Home = () => {
                         </Grid>
                         <Grid item style={{marginTop: "20px"}}>
                             <CustomLabelHeaderLarge
-                                text={"Business Immigration"}
+                                text={businessImmigrationTitle}
                                 color={"black"} fontWeight={"bold"}/>
                         </Grid>
                         <Grid item style={{marginTop: "10px"}}>
                             <CustomLabelLabelMedium
-                                text={"Lorem ipsum dolor sitame coctetur adipiscing elised do eiusmte"}
+                                text={businessImmigrationDesc}
                                 color={"black"} fontWeight={"bold"} color={"black"} fontWeight={"bold"}
                                 opacity={0.6} lineHeight={1.7} textAlign={"center"}/>
                         </Grid>
@@ -385,12 +448,12 @@ const Home = () => {
                         </Grid>
                         <Grid item style={{marginTop: "20px"}}>
                             <CustomLabelHeaderLarge
-                                text={"Skilled Immigration"}
+                                text={skilledImmigrationTitle}
                                 color={"black"} fontWeight={"bold"}/>
                         </Grid>
                         <Grid item style={{marginTop: "10px"}}>
                             <CustomLabelLabelMedium
-                                text={"Lorem ipsum dolor sitame coctetur adipiscing elised do eiusmte"}
+                                text={skilledImmigrationDesc1}
                                 color={"black"} fontWeight={"bold"} color={"black"} fontWeight={"bold"}
                                 opacity={0.6} lineHeight={1.7} textAlign={"center"}/>
                         </Grid>
@@ -403,7 +466,7 @@ const Home = () => {
                 <Grid item xs={9} container justifyContent={"center"} direction={"column"} alignItems={"center"}>
                     <Grid item style={{marginTop: "20px"}}>
                         <CustomLabelHeaderLarge
-                            text={"We offer 360 degree consultation and support"}
+                            text={skilledImmigrationDesc2}
                             color={"black"} fontWeight={"bold"}/>
                     </Grid>
                     <Grid item style={{marginTop: "10px"}}>
@@ -441,13 +504,13 @@ const Home = () => {
                                         }}>
                                             <Grid item>
                                                 <CustomLabelHeaderLarge
-                                                    text={"Inspection, sorting and processing "}
+                                                    text={inspectingSortingTitle}
                                                     color={"#FF0000"} fontWeight={"bold"}/>
 
                                             </Grid>
                                             <Grid item style={{marginTop: "20px"}}>
                                                 <CustomLabelLabelMedium
-                                                    text={"of your documents, which are a necessary for the recognition procedure."}
+                                                    text={inspectingSortingDesc1}
                                                     color={"black"} fontWeight={"bold"} color={"black"}
                                                     fontWeight={"bold"}
                                                     opacity={1} lineHeight={1.7} textAlign={"justify"}/>
@@ -457,7 +520,7 @@ const Home = () => {
                                     <Grid item xs={1.5} sm={2} md={2} lg={1.5}></Grid>
                                     <Grid item xs={5} style={{marginTop: -10}}>
                                         <CustomLabelHeaderLarge
-                                            text={"Step1 "}
+                                            text={step1Title}
                                             color={"#FF0000"} fontWeight={"bold"}/>
                                     </Grid>
                                 </Grid>
@@ -469,7 +532,7 @@ const Home = () => {
                                 <Grid container style={{position: "absolute", left: 0}}>
                                     <Grid item xs={5} style={{marginTop: -10}} container justifyContent={"flex-end"}>
                                         <CustomLabelHeaderLarge
-                                            text={"Step 2"}
+                                            text={step2Title}
                                             color={"#FF0000"} fontWeight={"bold"}/>
                                     </Grid>
                                     <Grid item xs={1.5} sm={2} md={2} lg={1.5}></Grid>
@@ -484,13 +547,13 @@ const Home = () => {
                                         }}>
                                             <Grid item>
                                                 <CustomLabelHeaderLarge
-                                                    text={"Translation of your documents "}
+                                                    text={translationDocTitle}
                                                     color={"#FF0000"} fontWeight={"bold"}/>
 
                                             </Grid>
                                             <Grid item style={{marginTop: "20px"}}>
                                                 <CustomLabelLabelMedium
-                                                    text={"into the German language by a certified translator. Translated documents are mandatory."}
+                                                    text={translationDocDesc1}
                                                     color={"black"} fontWeight={"bold"} color={"black"}
                                                     fontWeight={"bold"}
                                                     opacity={1} lineHeight={1.7} textAlign={"justify"}/>
@@ -515,13 +578,13 @@ const Home = () => {
                                         }}>
                                             <Grid item>
                                                 <CustomLabelHeaderLarge
-                                                    text={"Submitting your documents"}
+                                                    text={submitDocTitle}
                                                     color={"#FF0000"} fontWeight={"bold"}/>
 
                                             </Grid>
                                             <Grid item style={{marginTop: "20px"}}>
                                                 <CustomLabelLabelMedium
-                                                    text={"in the relevant recognition authority. Due to the large number of chambers and organizations for the individual professions, there are different procedures, documents and contact points. By cooperating with the various institutions, PAF can submit the documents specifically and completely to the relevant organization."}
+                                                    text={submitDocDesc1}
                                                     color={"black"} fontWeight={"bold"} color={"black"}
                                                     fontWeight={"bold"}
                                                     opacity={1} lineHeight={1.7} textAlign={"justify"}/>
@@ -531,7 +594,7 @@ const Home = () => {
                                     <Grid item xs={1.5} sm={2} md={2} lg={1.5}></Grid>
                                     <Grid item xs={5} style={{marginTop: -10}}>
                                         <CustomLabelHeaderLarge
-                                            text={"Step 3"}
+                                            text={step3Title}
                                             color={"#FF0000"} fontWeight={"bold"}/>
                                     </Grid>
                                 </Grid>
@@ -543,7 +606,7 @@ const Home = () => {
                                 <Grid container style={{position: "absolute", left: 0, maxHeight: "160px"}}>
                                     <Grid item xs={5} style={{marginTop: -10}} container justifyContent={"flex-end"}>
                                         <CustomLabelHeaderLarge
-                                            text={"Step 4"}
+                                            text={step4Title}
                                             color={"#FF0000"} fontWeight={"bold"}/>
                                     </Grid>
                                     <Grid item xs={1.5} sm={2} md={2} lg={1.5}></Grid>
@@ -558,13 +621,13 @@ const Home = () => {
                                         }}>
                                             <Grid item>
                                                 <CustomLabelHeaderLarge
-                                                    text={"Deficit notice"}
+                                                    text={deficitTitle}
                                                     color={"#FF0000"} fontWeight={"bold"}/>
 
                                             </Grid>
                                             <Grid item style={{marginTop: "20px"}}>
                                                 <CustomLabelLabelMedium
-                                                    text={"If qualifications are missing or insufficient, we will arrange the respective qualification for you."}
+                                                    text={deficitDesc1}
                                                     color={"black"} fontWeight={"bold"} color={"black"}
                                                     fontWeight={"bold"}
                                                     opacity={1} lineHeight={1.7} textAlign={"justify"}/>
@@ -589,13 +652,13 @@ const Home = () => {
                                         }}>
                                             <Grid item>
                                                 <CustomLabelHeaderLarge
-                                                    text={"Search for the right job"}
+                                                    text={searchForJobTitle}
                                                     color={"#FF0000"} fontWeight={"bold"}/>
 
                                             </Grid>
                                             <Grid item style={{marginTop: "20px"}}>
                                                 <CustomLabelLabelMedium
-                                                    text={"PAF supports you in finding the right employer with coaching for interviews and contract review of the employment contract."}
+                                                    text={searchForJobDesc}
                                                     color={"black"} fontWeight={"bold"} color={"black"}
                                                     fontWeight={"bold"}
                                                     opacity={1} lineHeight={1.7} textAlign={"justify"}/>
@@ -605,7 +668,7 @@ const Home = () => {
                                     <Grid item xs={1.5} sm={2} md={2} lg={1.5}></Grid>
                                     <Grid item xs={5} style={{marginTop: -10}}>
                                         <CustomLabelHeaderLarge
-                                            text={"Step 5"}
+                                            text={step5Title}
                                             color={"#FF0000"} fontWeight={"bold"}/>
                                     </Grid>
                                 </Grid>
@@ -617,7 +680,7 @@ const Home = () => {
                                 <Grid container style={{position: "absolute", left: 0, maxHeight: "160px"}}>
                                     <Grid item xs={5} style={{marginTop: -10}} container justifyContent={"flex-end"}>
                                         <CustomLabelHeaderLarge
-                                            text={"Step 6"}
+                                            text={step6Title}
                                             color={"#FF0000"} fontWeight={"bold"}/>
                                     </Grid>
                                     <Grid item xs={1.5} sm={2} md={2} lg={1.5}></Grid>
@@ -632,13 +695,13 @@ const Home = () => {
                                         }}>
                                             <Grid item>
                                                 <CustomLabelHeaderLarge
-                                                    text={"Acquisition of living space"}
+                                                    text={acquisitionLivingTitle}
                                                     color={"#FF0000"} fontWeight={"bold"}/>
 
                                             </Grid>
                                             <Grid item style={{marginTop: "20px"}}>
                                                 <CustomLabelLabelMedium
-                                                    text={"Our trained staff will assist you in finding suitable accommodation near your work location."}
+                                                    text={acquisitionLivingDesc1}
                                                     color={"black"} fontWeight={"bold"} color={"black"}
                                                     fontWeight={"bold"}
                                                     opacity={1} lineHeight={1.7} textAlign={"justify"}/>
@@ -663,13 +726,13 @@ const Home = () => {
                                         }}>
                                             <Grid item>
                                                 <CustomLabelHeaderLarge
-                                                    text={"Opening bank accounts"}
+                                                    text={openingBackTitle}
                                                     color={"#FF0000"} fontWeight={"bold"}/>
 
                                             </Grid>
                                             <Grid item style={{marginTop: "20px"}}>
                                                 <CustomLabelLabelMedium
-                                                    text={"In Germany, you need to have a bank account for your salary payments, which are transferred to your current account by your employer. We also help you to open a bank account in Germany."}
+                                                    text={openingBackDesc1}
                                                     color={"black"} fontWeight={"bold"} color={"black"}
                                                     fontWeight={"bold"}
                                                     opacity={1} lineHeight={1.7} textAlign={"justify"}/>
@@ -679,7 +742,7 @@ const Home = () => {
                                     <Grid item xs={1.5} sm={2} md={2} lg={1.5}></Grid>
                                     <Grid item xs={5} style={{marginTop: -10}}>
                                         <CustomLabelHeaderLarge
-                                            text={"Step 7"}
+                                            text={step7Title}
                                             color={"#FF0000"} fontWeight={"bold"}/>
                                     </Grid>
                                 </Grid>
@@ -700,30 +763,31 @@ const Home = () => {
                   }}>
                 <Grid item>
                     <CustomLabelLabelMedium
-                        text={"Choose Immigration"}
+                        text={chooseImmigrationTitle}
                         color={"black"} fontWeight={"bold"} color={"black"} fontWeight={"bold"}
                         opacity={1} lineHeight={1.7} textAlign={"justify"}/>
                 </Grid>
                 <Grid item style={{marginTop: "20px"}}>
                     <CustomLabelHeaderLarge
-                        text={"Immigration - Choose "}
+                        text={immigrationChooseTitle}
                         color={"black"} fontWeight={"bold"}>
-                        <span style={{color: "#FFCC00"}}>your profession!</span>
+                        <span style={{color: "#FFCC00"}}>{yourProfessionTile}</span>
                     </CustomLabelHeaderLarge>
                 </Grid>
                 <Grid container justifyContent={"space-around"} style={{marginTop: "30px", width: "100%"}}>
-                    <Grid item xs={12} md={2.8} container alignItems={"center"} direction={"column"}>
+                    <Grid item xs={12} md={2.8} container alignItems={"center"} direction={"column"}
+                    style={{cursor:"pointer"}} onClick={(e)=>onChangeLink('engineering')}>
                         <Grid item>
                             <Box component={"img"} src={ArchitectIcon} sx={{width: "100%"}}/>
                         </Grid>
                         <Grid item style={{marinTop: "10px"}}>
                             <CustomLabelHeaderLarge
-                                text={"Engineering"}
+                                text={engineeringTitle}
                                 color={"black"} fontWeight={"bold"} textAlign={"center"}/>
                         </Grid>
                         <Grid item style={{marginTop: "10px"}}>
                             <CustomLabelLabelMedium
-                                text={"Germany is famous for its engineering expertise and the quality of its mach..."}
+                                text={engineeringDesc1}
                                 color={"black"} fontWeight={"bold"} color={"black"} fontWeight={"bold"}
                                 opacity={0.6} lineHeight={1.7} textAlign={"center"}/>
                         </Grid>
@@ -734,24 +798,25 @@ const Home = () => {
                             </Grid>
                             <Grid item>
                                 <CustomLabelLabelMedium
-                                    text={"Read more"}
+                                    text={readMoreTitle}
                                     color={"#FF0000"} fontWeight={"bold"}/>
 
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12} md={2.8} container alignItems={"center"} direction={"column"}>
+                    <Grid item xs={12} md={2.8} container alignItems={"center"} direction={"column"}
+                        style={{cursor:"pointer"}}  onClick={(e)=>onChangeLink('scientists')}>
                         <Grid item>
                             <img src={StudentIcon} style={{width: "100%"}}/>
                         </Grid>
                         <Grid item style={{marinTop: "10px"}}>
                             <CustomLabelHeaderLarge
-                                text={"Scientists"}
+                                text={scientistsTitle}
                                 color={"black"} fontWeight={"bold"} textAlign={"center"}/>
                         </Grid>
                         <Grid item style={{marginTop: "10px"}}>
                             <CustomLabelLabelMedium
-                                text={"Lorem ipsum dolor sitame coctetur adipiscing elised do eiusmte..."}
+                                text={scientistsDesc1}
                                 color={"black"} fontWeight={"bold"} color={"black"} fontWeight={"bold"}
                                 opacity={0.6} lineHeight={1.7} textAlign={"center"}/>
                         </Grid>
@@ -762,24 +827,25 @@ const Home = () => {
                             </Grid>
                             <Grid item>
                                 <CustomLabelLabelMedium
-                                    text={"Read more"}
+                                    text={readMoreTitle}
                                     color={"#FF0000"} fontWeight={"bold"}/>
 
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12} md={2.8} container alignItems={"center"} direction={"column"}>
+                    <Grid item xs={12} md={2.8} container alignItems={"center"} direction={"column"}
+                          style={{cursor:"pointer"}}  onClick={(e)=>onChangeLink('it-specialist')}>
                         <Grid item>
                             <img src={ItIcon} style={{width: "100%"}}/>
                         </Grid>
                         <Grid item style={{marinTop: "10px"}}>
                             <CustomLabelHeaderLarge
-                                text={"IT Specialist"}
+                                text={itSpecialistTitle}
                                 color={"black"} fontWeight={"bold"} textAlign={"center"}/>
                         </Grid>
                         <Grid item style={{marginTop: "10px"}}>
                             <CustomLabelLabelMedium
-                                text={"Nowadays, digital applications and intelligent technology define ou..."}
+                                text={scientistsDesc2}
                                 color={"black"} fontWeight={"bold"} color={"black"} fontWeight={"bold"}
                                 opacity={0.6} lineHeight={1.7} textAlign={"center"}/>
                         </Grid>
@@ -790,24 +856,25 @@ const Home = () => {
                             </Grid>
                             <Grid item>
                                 <CustomLabelLabelMedium
-                                    text={"Read more"}
+                                    text={readMoreTitle}
                                     color={"#FF0000"} fontWeight={"bold"}/>
 
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12} md={2.8} container alignItems={"center"} direction={"column"}>
+                    <Grid item xs={12} md={2.8} container alignItems={"center"} direction={"column"}
+                          style={{cursor:"pointer"}}  onClick={(e)=>onChangeLink('nursing')}>
                         <Grid item>
                             <img src={NursingIcon} style={{width: "100%"}}/>
                         </Grid>
                         <Grid item style={{marinTop: "10px"}}>
                             <CustomLabelHeaderLarge
-                                text={"Nursing"}
+                                text={nursingTitle}
                                 color={"black"} fontWeight={"bold"} textAlign={"center"}/>
                         </Grid>
                         <Grid item style={{marginTop: "10px"}}>
                             <CustomLabelLabelMedium
-                                text={"Thanks to the excellent living conditions in Germany, a considerable proportion..."}
+                                text={nursingDesc1}
                                 color={"black"} fontWeight={"bold"} color={"black"} fontWeight={"bold"}
                                 opacity={0.6} lineHeight={1.7} textAlign={"center"}/>
                         </Grid>
@@ -818,7 +885,7 @@ const Home = () => {
                             </Grid>
                             <Grid item>
                                 <CustomLabelLabelMedium
-                                    text={"Read more"}
+                                    text={readMoreTitle}
                                     color={"#FF0000"} fontWeight={"bold"}/>
 
                             </Grid>
@@ -834,7 +901,7 @@ const Home = () => {
                           alignItems={{xs: "center", md: "space-between"}}>
                         <Grid item>
                             <CustomLabelLabelMedium
-                                text={"PAF Consultants"}
+                                text={pafConsultantTitle}
                                 color={"#FFCC00"} fontWeight={"bold"} fontWeight={"bold"}
                                 opacity={1} lineHeight={1.7} textAlign={"justify"}/>
                         </Grid>
@@ -849,16 +916,14 @@ const Home = () => {
                         </Grid>
                         <Grid item style={{marginTop: "20px"}}>
                             <CustomLabelLabelMedium
-                                text={"Lorem ipsum dolor sitame coctetur adipiscing elised do eiusmte Lorem ipsum dolor sitame coctetur adipiscing elised do eiusmte.\n" +
-                                "Lorem ipsum dolor sitame coctetur adipiscing elised do eiusmte Lorem ipsum dolor sitame coctetur adipiscing elised do eiusmte Lorem ipsum dolor sitame coctetur adipiscing elised do eiusmte.\n" +
-                                "Lorem ipsum dolor sitame coctetur adipiscing elised do eiusmteLorem ipsum dolor sitame coctetur adipiscing."}
+                                text={pafConsultantDesc1}
                                 color={"black"} fontWeight={"normal"}
                                 opacity={0.6} lineHeight={1.7} textAlign={"justify"}/>
                         </Grid>
                         <Grid item container style={{marginTop: "20px"}}
                               justifyContent={{xs: "center", md: "space-between"}}>
-                            <Grid item>
-                                <CustomButtonLarge text={"Get Consultations"} background={"red"}
+                            <Grid item onClick={(e)=>openLink("whatsapp://send?abid=phonenumber&text=Hello%2C%20World!")}>
+                                <CustomButtonLarge text={getConsultantTitle} background={"red"}
                                                    border={"2px solid red"}/>
                             </Grid>
                         </Grid>

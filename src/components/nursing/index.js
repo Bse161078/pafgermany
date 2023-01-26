@@ -1,5 +1,5 @@
 import Grid from "@mui/material/Grid/Grid";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {CustomLabelHeaderLarge, CustomLabelLabelMedium} from "../common/label";
 import NursingDetail from "src/assets/images/nursing-detail.webp";
 import NursingDetail1Image1 from "src/assets/images/nursing-des-img1.svg";
@@ -16,17 +16,45 @@ import NursingDetail4Image3 from "src/assets/images/nursing-des4-img3.svg";
 import NursingDetail4Image4 from "src/assets/images/nursing-des4-img4.svg";
 import NursingDetail4Image5 from "src/assets/images/nursing-des4-img5.svg";
 import {CustomButtonLarge} from "../common/button";
-import {CustomTextField} from "../common/text";
+import {CustomTextField, CustomTextFieldWhite} from "../common/text";
+import {useOutletContext} from "react-router-dom"
+import {useSelector} from "react-redux";
+
+
+let nursingProfessionTitle;
 
 
 const Nursing = () => {
+
+    const {onClick,userId} = useOutletContext();
+
+
+    const {selectedLanguage} = useSelector((state) => state.languageReducer);
+    const [loading, setLoading] = useState(false);
+    const [count,setCount]=useState(0);
+
+    const loadConstant = async () => {
+        setLoading(true);
+        ({
+            nursingProfessionTitle
+        } =
+            selectedLanguage === "English" ? await import(`src/translation/eng`) : await import(`src/translation/tur`));
+        setLoading(false);
+        setCount(count+1)
+    }
+
+    useEffect(()=>{
+        loadConstant();
+    },[selectedLanguage])
+
+
     return (
         <Grid container justifyContent={"center"} sx={{marginTop: {xs:"calc(50vh - 250px)",sm:"calc(50vh - 250px)",lg:"calc(50vh - 300px)"}}}>
             <Grid item xs={9} container sx={{marginTop: {xs:"5px",md:"20px"}}} justifyContent={"space-between"}>
                 <Grid item container xs={12} md={7} direction={"column"}>
                     <Grid item>
                         <CustomLabelHeaderLarge
-                            text={"Nursing professions have a secure future"}
+                            text={nursingProfessionTitle}
                             color={"red"} fontWeight={"bold"}/>
                     </Grid>
                     <Grid item container style={{marginTop: "20px"}}>
@@ -235,14 +263,14 @@ const Nursing = () => {
                             <Paper style={{width: "100%", padding: "40px 20xp 40px 20px",borderRadius:"20px", background: "#F5F5F5"}}>
                                 <Grid contanier alignItems={"center"} direction={"column"} style={{padding:"20px"}}>
                                     <Grid item>
-                                        <CustomLabelLabelMedium
+                                        <CustomLabelHeaderLarge
                                             text={"Full service for your start in"}
                                             color={"black"} fontWeight={"bold"} textAlign={"center"}
                                             opacity={0.7} lineHeight={1.7}/>
 
                                     </Grid>
                                     <Grid item>
-                                        <CustomLabelLabelMedium
+                                        <CustomLabelHeaderLarge
                                             text={"Germany"}
                                             color={"#FFCC00"} fontWeight={"bold"} textAlign={"center"}
                                             opacity={1} lineHeight={1.7}/>
@@ -312,10 +340,13 @@ const Nursing = () => {
                                             </Grid>
                                         </Grid>
 
-
-                                        <Grid container justifyContent={"center"} style={{marginTop:"20px"}}>
-                                            <CustomButtonLarge text={"Sign Up"} background={"red"} border={"2px solid red"}/>
-                                        </Grid>
+                                        {!userId &&
+                                            <Grid container justifyContent={"center"} style={{marginTop: "20px"}}
+                                                  onClick={(e) => onClick('register')}>
+                                                <CustomButtonLarge text={"Sign Up"} background={"red"}
+                                                                   border={"2px solid red"}/>
+                                            </Grid>
+                                        }
                                     </Grid>
                                 </Grid>
                             </Paper>
@@ -342,7 +373,7 @@ const Nursing = () => {
                                                     lineHeight={1.7}/>
                                             </Grid>
                                             <Grid item container>
-                                                <CustomTextField placeholder={"Harry"}/>
+                                                <CustomTextFieldWhite placeholder={"Harry"}/>
                                             </Grid>
                                         </Grid>
 
@@ -354,7 +385,7 @@ const Nursing = () => {
                                                     lineHeight={1.7}/>
                                             </Grid>
                                             <Grid item container>
-                                                <CustomTextField placeholder={"1(234) 567-8900"}/>
+                                                <CustomTextFieldWhite placeholder={"1(234) 567-8900"}/>
                                             </Grid>
                                         </Grid>
 
@@ -366,7 +397,7 @@ const Nursing = () => {
                                                     lineHeight={1.7}/>
                                             </Grid>
                                             <Grid item container>
-                                                <CustomTextField placeholder={"Harry"}/>
+                                                <CustomTextFieldWhite placeholder={"Harry"}/>
                                             </Grid>
                                         </Grid>
 
@@ -378,7 +409,7 @@ const Nursing = () => {
                                                     lineHeight={1.7}/>
                                             </Grid>
                                             <Grid item container>
-                                                <CustomTextField placeholder={""}/>
+                                                <CustomTextFieldWhite placeholder={""}/>
                                             </Grid>
                                         </Grid>
 

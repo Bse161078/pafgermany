@@ -35,6 +35,8 @@ import MenuItem from "@mui/material/MenuItem/MenuItem";
 import DoneIcon from '@mui/icons-material/Done';
 import {doc, getDoc, setDoc} from "firebase/firestore";
 import Loader from "../../common/Loader";
+import axios from "axios";
+import {BASE_URL} from "../../../constants";
 
 
 export const initialRegister = {
@@ -116,14 +118,26 @@ const RegisterStep3 = (props) => {
     }
 
 
+    const createBitRixUser=async()=>{
+        try {
+            const response=await axios.post(`${BASE_URL}/user-bitrix`,{userId})
+            return response.data;
+
+        }catch (e) {
+            return
+        }
+    }
 
 
 
     const registerUser = async () => {
+
         setLoading(true);
         const userData = transformValidateObject(user);
         userData.progress = 3;
         await setDoc(doc(getFireStoreDb(), "users", userId), userData,{ merge: true });
+
+        await createBitRixUser();
         setLoading(false);
         navigate('/');
     }

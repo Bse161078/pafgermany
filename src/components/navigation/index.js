@@ -4,7 +4,7 @@ import React from "react";
 import Grid from "@mui/material/Grid/Grid";
 import AirportIcon from "../../assets/images/airport.png";
 import Box from "@mui/material/Box/Box";
-import PafIcon from "../../assets/images/paf.png";
+import PafIcon from "../../assets/images/paf-logo.svg";
 import MenuItem from "../common/menu-item";
 import WorkContainer from "../common/work-container";
 import LivingContainer from "../common/living-container";
@@ -22,17 +22,23 @@ import {
     CustomLabelHeaderExtraLargeNav,
     CustomLabelHeaderLarge,
     CustomLabelHeaderLarge1,
-    CustomLabelHeaderLargeNav
+    CustomLabelHeaderLargeNav, CustomLabelLabelSmallMedium
 } from "../common/label";
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import NavBarDetail from "../nav-bar-detail";
 import {getFireStoreDb, initializeFirebase} from "../../config/firebase";
-import {getAuth, createUserWithEmailAndPassword, onAuthStateChanged,signOut} from "firebase/auth";
+import {getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signOut} from "firebase/auth";
 import Loader from "../common/Loader";
 import ResponsiveConfirmationDialog from "../common/ResponsiveConfirmation";
 import Button from "@mui/material/Button/Button";
-import { doc, setDoc,getDoc } from "firebase/firestore";
+import {doc, setDoc, getDoc} from "firebase/firestore";
+import Backdrop from "@mui/material/Backdrop/Backdrop";
+import EnglishIcon from 'src/assets/images/english.svg';
+import TurkishIcon from 'src/assets/images/turkish.svg';
+import {updateSelectedLanguage} from "../../reducers";
+import {useDispatch, useSelector} from "react-redux";
+
 
 const initialHover = {home: false, work: false, living: false, cost: false};
 
@@ -48,17 +54,44 @@ const initialConfirmation = {
 }
 
 
+let homeTitle,workInGermanyTitle,liveInGermanyTitle,costAndFeesTitle,loginTitle,signUpTitle,myAccountTitle,logoutTitle;
+
 const Navigation = () => {
+
+    const dispatch = useDispatch();
+
+    const {selectedLanguage} = useSelector((state) => state.languageReducer);
+
     const location = useLocation().pathname;
     let navigate = useNavigate();
     const [hover, setHover] = useState(initialHover);
+    const [clicked, setClicked] = useState(initialHover);
     const [showMenu, setShowMenu] = useState(false);
     const textareaRef = useRef();
     const [userId, setUserId] = useState(null);
     const [loading, setLoading] = useState(false);
     const [confirmation, setConfirmation] = useState(initialConfirmation);
-    const [count,setCount]=useState(0);
+    const [count, setCount] = useState(0);
+    const [selectedSubMenu, setSelectedSubMenu] = useState(null);
+    const [showLanguageContainer,setShowLanguageContainer]=useState(false);
 
+
+
+    const loadConstant = async () => {
+        setLoading(true);
+        ({
+            homeTitle,workInGermanyTitle,liveInGermanyTitle,costAndFeesTitle,loginTitle,signUpTitle,myAccountTitle,logoutTitle
+        } =
+            selectedLanguage === "English" ? await import(`src/translation/eng`) : await import(`src/translation/tur`));
+        setCount(count+1);
+        setLoading(false);
+    }
+
+
+
+    useEffect(()=>{
+        loadConstant();
+    },[selectedLanguage])
 
     const getUserData = async (id) => {
 
@@ -74,7 +107,8 @@ const Navigation = () => {
     }
 
     useEffect(() => {
-        setHover({...initialHover, home: true})
+        setHover({...initialHover, home: false})
+        setClicked({...initialHover, home: true})
         initializeFirebase();
         setLoading(true);
 
@@ -84,7 +118,7 @@ const Navigation = () => {
 
             if (user && user.uid) {
                 const userData = await getUserData(user.uid);
-                if (userData && userData.progress===3) {
+                if (userData && userData.progress === 3) {
                     setUserId(user.uid);
                 }
             }
@@ -104,20 +138,40 @@ const Navigation = () => {
         setHover({...initialHover, [type]: false})
     }
 
-    useEffect(()=>{
-        if(userId){
+    useEffect(() => {
+        if (userId) {
             navigate('/dashboard');
         }
 
 
-    },[userId])
+    }, [userId])
 
     useEffect(() => {
         navigate('/');
     }, []);
 
 
+    useEffect(() => {
+        if (location !== selectedSubMenu) {
+            setSelectedSubMenu(null);
+        }
+    }, [location])
+
+
+    const onClickTab = (page, type) => {
+        setClicked({...initialHover, [type]: true});
+        onChangeLink(page)
+    }
+
+
+    const onClickSubTab = (page, type) => {
+        setClicked({...initialHover, [type]: true});
+        setSelectedSubMenu(page);
+        onChangeLink(page);
+    }
+
     const onChangeLink = (page) => {
+
         setShowMenu(false);
         navigate(`${page}`);
         window.scrollTo(0, 0)
@@ -129,7 +183,7 @@ const Navigation = () => {
     }
 
 
-    const logoutUser=(e)=>{
+    const logoutUser = (e) => {
         setLoading(true);
         const auth = getAuth();
         signOut(auth).then(() => {
@@ -149,6 +203,19 @@ const Navigation = () => {
             })
         });
 
+    }
+
+
+    const updateLanguage = async (e,language) => {
+        if (language) dispatch(updateSelectedLanguage({selectedLanguage: language}));
+        setShowLanguageContainer(false);
+        e.stopPropagation();
+    }
+
+
+    const onOutsideClick=(e)=>{
+        setShowLanguageContainer(false);
+        e.stopPropagation();
     }
 
 
@@ -203,8 +270,12 @@ const Navigation = () => {
     }
 
 
+    console.log("language = ",selectedLanguage);
+    const showBackdrop = hover.living || hover.work;
+
     return (
-        <div style={{width: "100vw", height: "100vh"}}>
+        <div style={{width: "97vw", height: "100vh"}} onClick={onOutsideClick}>
+            <Grid container></Grid>
             {loading && <Loader/>}
             {
                 confirmation.show &&
@@ -217,6 +288,13 @@ const Navigation = () => {
             {showMenu &&
             <NavBarDetail closeMenu={closeMenu} onClick={onChangeLink}/>
             }
+            {showBackdrop &&
+            <Backdrop
+                sx={{color: '#fff', zIndex: 1}}
+                open={true}
+            />
+            }
+
             <Grid container style={{paddingBottom: "50px"}}>
                 {
                     location == "/" && <BackgroundContainerHome icon={AirportIcon}/>
@@ -226,28 +304,35 @@ const Navigation = () => {
                 }
                 <Grid container style={{zIndex: 1, marginTop: "20px", height: location === "/" && "calc(100vh - 20px)"}}
                       justifyContent={"center"}>
-                    <Grid container item xs={11} justifyContent={"space-between"}>
+                    <Grid container item xs={11.5} justifyContent={"space-between"}
+                          style={{position: "relative", zIndex: 10}}>
                         <Grid item>
                             <Box component={"img"} src={PafIcon}/>
                         </Grid>
                         <Grid item sx={{position: "relative", display: {xs: "none", sm: "block"}}}>
                             <Grid container spacing={{xs: 1, md: 2}}>
-                                <MenuItem selected={hover.home} showDropDownIcon={false} title={"Home"}
-                                          type={"home"} onEnter={onEnter} onLeave={onLeave} onClick={onChangeLink}
+                                <MenuItem hovered={hover.home} clicked={clicked.home} showDropDownIcon={false}
+                                          title={homeTitle}
+                                          type={"home"} onEnter={onEnter} onLeave={onLeave} onClick={onClickTab}
                                           page={"/"}/>
-                                <MenuItem selected={hover.work} showDropDownIcon={true} title={"Working in Germany"}
+                                <MenuItem hovered={hover.work} clicked={clicked.work} showDropDownIcon={true}
+                                          title={workInGermanyTitle}
                                           type={"work"} onEnter={onEnter} onLeave={null}/>
-                                <MenuItem selected={hover.living} showDropDownIcon={true} title={"Living in Germany"}
+                                <MenuItem hovered={hover.living} clicked={clicked.living} showDropDownIcon={true}
+                                          title={liveInGermanyTitle}
                                           type={"living"} onEnter={onEnter} onLeave={null}/>
-                                <MenuItem selected={hover.cost} showDropDownIcon={false} title={"Cost & Fees"}
-                                          type={"cost"} onEnter={onEnter} onLeave={onLeave} onClick={onChangeLink}
+                                <MenuItem hovered={hover.cost} clicked={clicked.cost} showDropDownIcon={false}
+                                          title={costAndFeesTitle}
+                                          type={"cost"} onEnter={onEnter} onLeave={onLeave} onClick={onClickTab}
                                           page={"/cost"}/>
                             </Grid>
 
 
-                            <WorkContainer hover={hover} onLeave={onLeave} onClick={onChangeLink}/>
+                            <WorkContainer hover={hover} type={"work"} onLeave={onLeave} onClick={onClickSubTab}
+                                           selectedSubMenu={selectedSubMenu}/>
 
-                            <LivingContainer hover={hover} onLeave={onLeave} onClick={onChangeLink}/>
+                            <LivingContainer hover={hover} type={"living"} onLeave={onLeave} onClick={onClickSubTab}
+                                             selectedSubMenu={selectedSubMenu}/>
 
 
                         </Grid>
@@ -262,12 +347,12 @@ const Navigation = () => {
                                 {!userId &&
                                 <>
                                     <Grid item onClick={(e) => onChangeLink(`/login`)}>
-                                        <CustomButtonLarge text={"Log in"} background={"transparent"}
+                                        <CustomButtonLarge text={loginTitle} background={"transparent"}
                                                            border={"2px solid red"}
                                         />
                                     </Grid>
                                     <Grid item style={{marginLeft: "20px"}} onClick={(e) => onChangeLink(`/register`)}>
-                                        <CustomButtonLarge text={"Sign Up"} background={"red"}
+                                        <CustomButtonLarge text={signUpTitle} background={"red"}
                                                            border={"2px solid red"}/>
                                     </Grid>
                                 </>
@@ -275,27 +360,69 @@ const Navigation = () => {
                                 {userId &&
                                 <>
                                     <Grid item onClick={(e) => onChangeLink(`/dashboard`)}>
-                                        <CustomButtonLarge text={"My Account"} background={"transparent"}
+                                        <CustomButtonLarge text={myAccountTitle} background={"transparent"}
                                                            border={"2px solid red"}
                                         />
                                     </Grid>
                                     <Grid item style={{marginLeft: "20px"}} onClick={logoutUser}>
-                                        <CustomButtonLarge text={"logout"} background={"red"}
+                                        <CustomButtonLarge text={logoutTitle} background={"red"}
                                                            border={"2px solid red"}/>
                                     </Grid>
                                 </>
                                 }
                                 <Divider orientation="vertical" variant="middle" flexItem
                                          style={{width: "2px", background: "#FFFFFF", marginLeft: "20px"}}/>
-                                <Grid item style={{marginLeft: "20px"}}>
-                                    <MenuItem selected={false} showDropDownIcon={true} title={"English"}/>
+                                <Grid item style={{marginLeft: "20px",position:"relative"}}>
+                                    <MenuItem selected={false} showDropDownIcon={true} title={selectedLanguage} onLanguageClick={(e)=>{
+                                        setShowLanguageContainer(!showLanguageContainer);
+                                        setCount(count+1);
+                                        e.stopPropagation();
+                                    }}/>
+                                    {
+                                        showLanguageContainer &&
+                                        <Grid container sx={{position:"absolute",top:{md:"25px",lg:"40px"},minWidth:"120px",left:{md:"-45px",lg:"-15px"}}}>
+                                            <Paper style={{width:"100%",background:"white",borderRadius:"10px"}}>
+                                                <Grid container direction={"column"}>
+                                                    <Grid container alignItems={"center"}
+                                                          style={{cursor:"pointer",background:selectedLanguage==="English" && "#f2f2f2",
+                                                              padding:"10px"}}
+                                                    onClick={(e)=>updateLanguage(e,'English')}>
+                                                        <Grid item>
+                                                            <img src={EnglishIcon}/>
+                                                        </Grid>
+                                                        <Grid item style={{marginLeft:"10px"}}>
+                                                            <CustomLabelLabelSmallMedium text={"English"}  fontWeight={"bold"} color={"black"}/>
+                                                        </Grid>
+                                                    </Grid>
+                                                    <Grid container alignItems={"center"}
+                                                          style={{cursor:"pointer",background:selectedLanguage==="Turkish" && "#f2f2f2"
+                                                              ,padding:"10px"}}
+                                                          onClick={(e)=>updateLanguage(e,'Turkish')}>
+                                                        <Grid item>
+                                                            <img src={TurkishIcon}/>
+                                                        </Grid>
+                                                        <Grid item style={{marginLeft:"10px"}}>
+                                                            <CustomLabelLabelSmallMedium text={"Turkish"}  fontWeight={"bold"} color={"black"}/>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Grid>
+                                            </Paper>
+                                        </Grid>
+                                    }
+
                                 </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
 
+                    {showBackdrop &&
+                        <Backdrop
+                            sx={{color: '#fff', zIndex: 4}}
+                            open={true}
+                        />
+                    }
                     {
-                        location === "/" && <PageHeaderContainerHome/>
+                        location === "/" && <PageHeaderContainerHome userId={userId} onClick={onChangeLink}/>
                     }
 
                     {
@@ -304,7 +431,7 @@ const Navigation = () => {
                 </Grid>
 
 
-                <Outlet context={{onClick: onChangeLink}}/>
+                <Outlet context={{onClick: onChangeLink,userId}}/>
 
             </Grid>
             <Footer onClick={onChangeLink}/>

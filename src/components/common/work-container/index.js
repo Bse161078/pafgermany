@@ -5,16 +5,40 @@ import {CustomLabelHeaderLarge, CustomLabelLabelMedium} from "../label";
 import ArrowForwardIosIcon from "@mui/material/SvgIcon/SvgIcon";
 import RecongnitionIcon from "../../../assets/images/receongnition.png";
 import BusinessIcon from "../../../assets/images/business.png";
-import React from "react";
+import React, {useEffect, useState} from "react";
+import {useSelector} from "react-redux";
+
+
+let professionalsTitle,nursingTitle,itSpecialistTitle,engineeringTitle,physiciansTitle,scientistTitle,recognitionTitle,whatRecognitionTitle,
+    whyRecognitionTitle,academicQualificationTitle,workEnvTitle,workContractTitle,salaryTaxSocialTitle;
 
 
 const WorkContainer = (props) => {
-    const {hover, onLeave,onClick} = props;
+    const {hover, onLeave,onClick,type,selectedSubMenu} = props;
+    const {selectedLanguage} = useSelector((state) => state.languageReducer);
+    const [count,setCount]=useState(0);
+
+    const loadConstant = async () => {
+        ({
+            professionalsTitle,nursingTitle,itSpecialistTitle,engineeringTitle,physiciansTitle,scientistTitle,recognitionTitle,whatRecognitionTitle,
+            whyRecognitionTitle,academicQualificationTitle,workEnvTitle,workContractTitle,salaryTaxSocialTitle
+        } =
+            selectedLanguage === "English" ? await import(`src/translation/eng`) : await import(`src/translation/tur`));
+        setCount(count+1);
+    }
+
+    useEffect(()=>{
+        loadConstant();
+    },[selectedLanguage])
+
+
+
     return (
         <Grid container sx={{
             position: "absolute",
-            zIndex: 2,
-            display: hover.work ? "block" : "none"
+            zIndex: 10,
+            display: hover.work ? "block" : "none",
+            filter:"blur(0px)"
         }}
               onMouseLeave={() => onLeave && onLeave("work")}
         >
@@ -22,14 +46,14 @@ const WorkContainer = (props) => {
                 {/*<ArrowDropUpIcon style={{color: "white", fontSize: "48px"}}/>*/}
             </Grid>
             <Paper style={{padding: "20px", background: "white", borderRadius: "20px"}}>
-                <Grid container justifyContent={"space-between"}>
+                <Grid container justifyContent={"space-between"} alignItems={"flex-start"}>
                     <Grid item xs={3.8} container direction={"column"} alignItems={"flex-start"}>
                         <Grid item>
                             <img src={ProfessionalsIcon} style={{width: "100%"}}/>
                         </Grid>
-                        <Grid item style={{marginLeft: "10px"}}>
+                        <Grid item style={{marginLeft: "5px"}}>
                             <CustomLabelHeaderLarge
-                                text={"Professionals"}
+                                text={professionalsTitle}
                                 color={"black"} fontWeight={"bold"}
                                 opacity={1} lineHeight={1.7}/>
                         </Grid>
@@ -38,10 +62,12 @@ const WorkContainer = (props) => {
                             <Grid item>
                                 <ArrowForwardIosIcon sx={{fontSize: {xs: "12px", lg: "18px"}}}/>
                             </Grid>
-                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/nursing')}>
+                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/nursing',type)}>
                                 <CustomLabelLabelMedium
-                                    text={"Nursing"}
-                                    color={"black"} fontWeight={"bold"} fontWeight={"bold"}
+                                    className={"hoverRedLabel"}
+                                    text={nursingTitle}
+                                    color={selectedSubMenu==="/nursing"?"red":"black"}
+                                    fontWeight={"bold"}
                                     opacity={0.8} lineHeight={1.7}/>
 
                             </Grid>
@@ -51,10 +77,12 @@ const WorkContainer = (props) => {
                             <Grid item>
                                 <ArrowForwardIosIcon sx={{fontSize: {xs: "12px", lg: "18px"}}}/>
                             </Grid>
-                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/it-specialist')}>
+                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/it-specialist',type)}>
                                 <CustomLabelLabelMedium
-                                    text={"IT Specialist"}
-                                    color={"black"} fontWeight={"bold"} fontWeight={"bold"}
+                                    className={"hoverRedLabel"}
+                                    text={itSpecialistTitle}
+                                    color={selectedSubMenu==="/it-specialist"?"red":"black"}
+                                    fontWeight={"bold"}
                                     opacity={0.8} lineHeight={1.7}/>
 
                             </Grid>
@@ -64,10 +92,12 @@ const WorkContainer = (props) => {
                             <Grid item>
                                 <ArrowForwardIosIcon sx={{fontSize: {xs: "12px", lg: "18px"}}}/>
                             </Grid>
-                            <Grid item style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/engineering')}>
+                            <Grid item style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/engineering',type)}>
                                 <CustomLabelLabelMedium
-                                    text={"Engineering"}
-                                    color={"black"} fontWeight={"bold"} fontWeight={"bold"}
+                                    className={"hoverRedLabel"}
+                                    text={engineeringTitle}
+                                    color={selectedSubMenu==="/engineering"?"red":"black"}
+                                    fontWeight={"bold"}
                                     opacity={0.8} lineHeight={1.7}/>
 
                             </Grid>
@@ -77,10 +107,12 @@ const WorkContainer = (props) => {
                             <Grid item>
                                 <ArrowForwardIosIcon sx={{fontSize: {xs: "12px", lg: "18px"}}}/>
                             </Grid>
-                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/physicians')}>
+                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/physicians',type)}>
                                 <CustomLabelLabelMedium
-                                    text={"Physicians"}
-                                    color={"black"} fontWeight={"bold"} fontWeight={"bold"}
+                                    className={"hoverRedLabel"}
+                                    text={physiciansTitle}
+                                    color={selectedSubMenu==="/physicians"?"red":"black"}
+                                    fontWeight={"bold"}
                                     opacity={0.8} lineHeight={1.7}/>
 
                             </Grid>
@@ -90,10 +122,12 @@ const WorkContainer = (props) => {
                             <Grid item>
                                 <ArrowForwardIosIcon sx={{fontSize: {xs: "12px", lg: "18px"}}}/>
                             </Grid>
-                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/scientists')}>
+                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/scientists',type)}>
                                 <CustomLabelLabelMedium
-                                    text={"Scientists"}
-                                    color={"black"} fontWeight={"bold"} fontWeight={"bold"}
+                                    className={"hoverRedLabel"}
+                                    text={scientistTitle}
+                                    color={selectedSubMenu==="/scientists"?"red":"black"}
+                                    fontWeight={"bold"}
                                     opacity={0.8} lineHeight={1.7}/>
 
                             </Grid>
@@ -105,19 +139,22 @@ const WorkContainer = (props) => {
                         </Grid>
                         <Grid item xs style={{marginLeft: "10px"}}>
                             <CustomLabelHeaderLarge
-                                text={"Recognition"}
-                                color={"black"} fontWeight={"bold"}
+                                text={recognitionTitle}
+                                color={"black"}
+                                fontWeight={"bold"}
                                 opacity={1} lineHeight={1.7}/>
                         </Grid>
-                        <Grid item container alignItems={"center"}
+                        <Grid item container alignItems={"flex-start"}
                               style={{marginTop: "10px", marginLeft: "5px"}}>
                             <Grid item>
                                 <ArrowForwardIosIcon sx={{fontSize: {xs: "12px", lg: "18px"}}}/>
                             </Grid>
-                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/recognition')}>
+                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/recognition',type)}>
                                 <CustomLabelLabelMedium
-                                    text={"Whats is recognition?"}
-                                    color={"black"} fontWeight={"bold"} fontWeight={"bold"}
+                                    className={"hoverRedLabel"}
+                                    text={whatRecognitionTitle}
+                                    color={selectedSubMenu==="/recognition"?"red":"black"}
+                                    fontWeight={"bold"}
                                     opacity={0.8} lineHeight={1.7}/>
 
                             </Grid>
@@ -127,10 +164,12 @@ const WorkContainer = (props) => {
                             <Grid item>
                                 <ArrowForwardIosIcon sx={{fontSize: {xs: "12px", lg: "18px"}}}/>
                             </Grid>
-                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/why-recognition')}>
+                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/why-recognition',type)}>
                                 <CustomLabelLabelMedium
-                                    text={"Why you need recognition?"}
-                                    color={"black"} fontWeight={"bold"} fontWeight={"bold"}
+                                    className={"hoverRedLabel"}
+                                    text={whyRecognitionTitle}
+                                    color={selectedSubMenu==="/why-recognition"?"red":"black"}
+                                    fontWeight={"bold"}
                                     opacity={0.8} lineHeight={1.7}/>
 
                             </Grid>
@@ -140,10 +179,12 @@ const WorkContainer = (props) => {
                             <Grid item>
                                 <ArrowForwardIosIcon sx={{fontSize: {xs: "12px", lg: "18px"}}}/>
                             </Grid>
-                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/academic-qualifications')}>
+                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/academic-qualifications',type)}>
                                 <CustomLabelLabelMedium
-                                    text={"Academic qualifications"}
-                                    color={"black"} fontWeight={"bold"} fontWeight={"bold"}
+                                    className={"hoverRedLabel"}
+                                    text={academicQualificationTitle}
+                                    color={selectedSubMenu==="/academic-qualifications"?"red":"black"}
+                                    fontWeight={"bold"}
                                     opacity={0.8} lineHeight={1.7}/>
 
                             </Grid>
@@ -155,7 +196,7 @@ const WorkContainer = (props) => {
                         </Grid>
                         <Grid item style={{marginLeft: "10px"}}>
                             <CustomLabelHeaderLarge
-                                text={"Working Environment"}
+                                text={workEnvTitle}
                                 color={"black"} fontWeight={"bold"}
                                 opacity={1} lineHeight={1.7}/>
                         </Grid>
@@ -164,10 +205,12 @@ const WorkContainer = (props) => {
                             <Grid item>
                                 <ArrowForwardIosIcon sx={{fontSize: {xs: "12px", lg: "18px"}}}/>
                             </Grid>
-                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/work-contract')}>
+                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/work-contract',type)}>
                                 <CustomLabelLabelMedium
-                                    text={"Work contract"}
-                                    color={"black"} fontWeight={"bold"} fontWeight={"bold"}
+                                    className={"hoverRedLabel"}
+                                    text={workContractTitle}
+                                    color={selectedSubMenu==="/work-contract"?"red":"black"}
+                                    fontWeight={"bold"}
                                     opacity={0.8} lineHeight={1.7} textAlign={"justify"}/>
 
                             </Grid>
@@ -177,10 +220,12 @@ const WorkContainer = (props) => {
                             <Grid item>
                                 <ArrowForwardIosIcon sx={{fontSize: {xs: "12px", lg: "18px"}}}/>
                             </Grid>
-                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/salary-tax')}>
+                            <Grid item xs style={{marginLeft: "5px",cursor:"pointer"}} onClick={(e)=>onClick('/salary-tax',type)}>
                                 <CustomLabelLabelMedium
-                                    text={"Salary, tax & social charges"}
-                                    color={"black"} fontWeight={"bold"} fontWeight={"bold"}
+                                    className={"hoverRedLabel"}
+                                    text={salaryTaxSocialTitle}
+                                    color={selectedSubMenu==="/salary-tax"?"red":"black"}
+                                    fontWeight={"bold"}
                                     opacity={0.8} lineHeight={1.7} textAlign={"justify"}/>
                             </Grid>
                         </Grid>
