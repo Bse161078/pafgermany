@@ -71,8 +71,8 @@ const Profile = () => {
         const translationDoc=(userData && userData.translation) || [];
 
         const submission=translationDoc.length;
-        const inProgress=(translationDoc.filter((translation)=>translation.paid)).length;
-        setStats({...stats,submission,inProgress});
+        const paidForms=(translationDoc.filter((translation)=>translation.paid)).length;
+        setStats({...stats,submission:paidForms});
         setCount(count+1);
 
     },[])

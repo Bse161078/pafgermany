@@ -38,6 +38,29 @@ import EnglishIcon from 'src/assets/images/english.svg';
 import TurkishIcon from 'src/assets/images/turkish.svg';
 import {updateSelectedLanguage} from "../../reducers";
 import {useDispatch, useSelector} from "react-redux";
+import ItIcon from 'src/assets/images/IT.jpg';
+import EngineeringIcon from 'src/assets/images/engeenering.jpg';
+import PhysicianIcon from 'src/assets/images/physician.jpg';
+import ScientistIcon from 'src/assets/images/scientist.jpg';
+import WhatRecognitionIcon from 'src/assets/images/what-is-recognition.jpg';
+import WhyRecognition from 'src/assets/images/why-you-need-recognition.jpg';
+import AcademicIcon from 'src/assets/images/academic-qualification.jpg';
+import WorkContractIcon from 'src/assets/images/work-contract.jpg';
+import SalaryIcon from 'src/assets/images/salary.jpg';
+import LanguageLessonsIcon from 'src/assets/images/language-lessons.jpg';
+import IntegrationCoursesIcon from 'src/assets/images/Integration-Courses.jpg';
+import EconomyIcon from 'src/assets/images/Economy.jpg';
+import ImmigrationIcon from 'src/assets/images/Immigration.jpg';
+import LivingExpensesIcon from 'src/assets/images/Living-Expenses-Salary.jpg';
+import CostAndFeesIcon from 'src/assets/images/cost-and-fees.jpg';
+import ContactUsIcon from 'src/assets/images/contact-us.jpg';
+import FaqIcon from 'src/assets/images/FAQ.jpg';
+import PrivacyIcon from 'src/assets/images/privacy-policy.jpg';
+import CancellationPolicyIcon from 'src/assets/images/cancelation-policy.jpg';
+import DashboardIcon from 'src/assets/images/dashboard.png';
+
+
+
 
 
 const initialHover = {home: false, work: false, living: false, cost: false};
@@ -224,53 +247,52 @@ const Navigation = () => {
         if (location === "/nursing") {
             pageHeader = {title: "Nursing Professionals", icon: NursingHeaderIcon}
         } else if (location === "/it-specialist") {
-            pageHeader = {title: "IT & SPECIALIST", icon: NursingHeaderIcon}
+            pageHeader = {title: "IT & SPECIALIST", icon: ItIcon}
         } else if (location === "/engineering") {
-            pageHeader = {title: "Engineering", icon: NursingHeaderIcon}
+            pageHeader = {title: "Engineering", icon: EngineeringIcon}
         } else if (location === "/physicians") {
-            pageHeader = {title: "Physicians", icon: NursingHeaderIcon}
+            pageHeader = {title: "Physicians", icon: PhysicianIcon}
         } else if (location === "/scientists") {
-            pageHeader = {title: "Scientists", icon: NursingHeaderIcon}
+            pageHeader = {title: "Scientists", icon: ScientistIcon}
         } else if (location === "/recognition") {
-            pageHeader = {title: "Recognition Procedure", icon: NursingHeaderIcon}
+            pageHeader = {title: "Recognition Procedure", icon: WhatRecognitionIcon}
         } else if (location === "/why-recognition") {
-            pageHeader = {title: "Why you need recognition?", icon: NursingHeaderIcon}
+            pageHeader = {title: "Why you need recognition?", icon: WhyRecognition}
         } else if (location === "/academic-qualifications") {
-            pageHeader = {title: "Academic qualifications?", icon: NursingHeaderIcon}
+            pageHeader = {title: "Academic qualifications?", icon: AcademicIcon}
         } else if (location === "/work-contract") {
-            pageHeader = {title: "Work-Contract?", icon: NursingHeaderIcon}
+            pageHeader = {title: "Work-Contract?", icon: WorkContractIcon}
         } else if (location === "/salary-tax") {
-            pageHeader = {title: "Salary, tax & social charges", icon: NursingHeaderIcon}
+            pageHeader = {title: "Salary, tax & social charges", icon: SalaryIcon}
         } else if (location === "/learn-german") {
-            pageHeader = {title: "language lessons", icon: NursingHeaderIcon}
+            pageHeader = {title: "language lessons", icon: LanguageLessonsIcon}
         } else if (location === "/integration-courses") {
-            pageHeader = {title: "Integrations Courses", icon: NursingHeaderIcon}
+            pageHeader = {title: "Integrations Courses", icon: IntegrationCoursesIcon}
         } else if (location === "/economy") {
-            pageHeader = {title: "Economy", icon: NursingHeaderIcon}
+            pageHeader = {title: "Economy", icon: EconomyIcon}
         } else if (location === "/immigration") {
-            pageHeader = {title: "Immigration", icon: NursingHeaderIcon}
+            pageHeader = {title: "Immigration", icon: ImmigrationIcon}
         } else if (location === "/living-expenses") {
-            pageHeader = {title: "Living-Expenses-Salary", icon: NursingHeaderIcon}
+            pageHeader = {title: "Living-Expenses-Salary", icon: LivingExpensesIcon}
         } else if (location === "/cost") {
             pageHeader = {title: "Cost & Fees", icon: NursingHeaderIcon}
         } else if (location === "/contact-us") {
-            pageHeader = {title: "Contact Us", icon: NursingHeaderIcon}
+            pageHeader = {title: "Contact Us", icon: ContactUsIcon}
         } else if (location === "/faq") {
-            pageHeader = {title: "Frequently Asked Questions", icon: NursingHeaderIcon}
+            pageHeader = {title: "Frequently Asked Questions", icon: FaqIcon}
         } else if (location === "/privacy-policy") {
-            pageHeader = {title: "Privacy Policy", icon: NursingHeaderIcon}
+            pageHeader = {title: "Privacy Policy", icon: PrivacyIcon}
         } else if (location === "/cancellation-policy") {
-            pageHeader = {title: "Cancellation Policy", icon: NursingHeaderIcon}
+            pageHeader = {title: "Cancellation Policy", icon: CancellationPolicyIcon}
         } else if (location === "/terms-condition") {
-            pageHeader = {title: "Terms and Conditions", icon: NursingHeaderIcon}
+            pageHeader = {title: "Terms and Conditions", icon: PrivacyIcon}
         } else if (location === "/dashboard" || location === '/dashboard/profile' || location === '/dashboard/translate'
             || location === '/dashboard/recognition') {
-            pageHeader = {title: "My Account", icon: NursingHeaderIcon}
+            pageHeader = {title: "My Account", icon: DashboardIcon}
         }
     }
 
 
-    console.log("language = ",selectedLanguage);
     const showBackdrop = hover.living || hover.work;
 
     return (
