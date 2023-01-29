@@ -159,6 +159,15 @@ const Home = () => {
     }
 
 
+    const handleBookAppointment=(e)=>{
+        if(userId){
+            onChangeLink('dashboard/recognition')
+        }else{
+            onChangeLink('login')
+        }
+    }
+
+
     const openLink = (url) => {
         let a = document.createElement("a");
         document.body.appendChild(a);
@@ -232,7 +241,7 @@ const Home = () => {
                         </Grid>
                     }
                     <Grid item xs={12} md={3.5} container sx={{marginTop: {xs: "20px", md: "0px"}}} style={{cursor: "pointer"}}
-                    onClick={(e)=>onClick("dashboard/recognition")}>
+                    onClick={handleBookAppointment}>
                         <Paper style={{width: "100%", borderRadius: "10px", position: "relative"}}>
                             <Grid item container justifyContent={"flex-end"}>
                                 <Grid item style={{
